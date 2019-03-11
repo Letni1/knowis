@@ -80,6 +80,8 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     'knowis.users.apps.UsersAppConfig',
+    'knowis.questions.apps.QuestionsConfig',
+    'knowis.useraccount.apps.UseraccountConfig',
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
