@@ -20,6 +20,7 @@ urlpatterns = [
         include("knowis.users.urls", namespace="users"),
     ),
     path("accounts/", include("allauth.urls")),
+    path('questions/', include('knowis.questions.urls', namespace='questions'))
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
