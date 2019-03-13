@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class QuestionsConfig(AppConfig):
-    name = "knowis.questions"
-    verbose_name = "Questions"
+class UseraccountConfig(AppConfig):
+    name = 'knowis.useraccount'
+    verbose_name = "Useraccount"
 
     def ready(self):
         try:

@@ -3,12 +3,12 @@ knowis
 
 smth like quora
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
-     :target: https://github.com/pydanny/cookiecutter-django/
+.. image:: https://img.shields.io/badge/Admin%20-Max%20-ff69b4.svg
+     :target: https://github.com/Letni1
      :alt: Built with Cookiecutter Django
 
 
-:License: MIT
+:License: SOVOK
 
 
 Settings
