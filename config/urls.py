@@ -1,17 +1,17 @@
 from django.conf import settings
-from django.urls import include, path, re_path
+from django.urls import include, path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path(
-        "about/",
-        TemplateView.as_view(template_name="pages/about.html"),
-        name="about",
-    ),
+    # path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    # path(
+    #     "about/",
+    #     TemplateView.as_view(template_name="pages/about.html"),
+    #     name="about",
+    # ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
@@ -19,8 +19,8 @@ urlpatterns = [
     #     "users/",
     #     include("knowis.users.urls", namespace="users"),
     # ),
-    re_path(r'^rest-auth/', include('rest_auth.urls')),
-    re_path(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('auth/', include('rest_auth.urls')),
+    path('auth/registration/', include('rest_auth.registration.urls')),
     path('questions/', include('knowis.questions.urls', namespace='questions'))
     # Your stuff: custom urls includes go here
 ] + static(

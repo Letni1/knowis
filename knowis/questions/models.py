@@ -2,11 +2,10 @@ import markdown
 import uuid as uuid_lib
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
 
-User = get_user_model()
 
 class Question(models.Model):
     DRAFT = 'D'

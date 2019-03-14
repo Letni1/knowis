@@ -1,4 +1,4 @@
-from rest_framework.generics import  (
+from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveDestroyAPIView
 )
