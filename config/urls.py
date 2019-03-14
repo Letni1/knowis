@@ -21,7 +21,7 @@ urlpatterns = [
     # ),
     path('auth/', include('rest_auth.urls')),
     path('auth/registration/', include('rest_auth.registration.urls')),
-    path('questions/', include('knowis.questions.urls', namespace='questions'))
+    path('api/', include('knowis.core.api_urls', namespace='api'))
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT

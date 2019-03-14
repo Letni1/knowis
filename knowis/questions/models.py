@@ -34,3 +34,23 @@ class Question(models.Model):
         verbose_name = _("Question")
         verbose_name_plural = _("Questions")
         ordering = ("-create_date",)
+
+
+class QuestionComment(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=500)
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    upvotes = models.IntegerField(default=0)
+    downvotes = models.IntegerField(default=0)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid_lib.uuid4,
+        editable=False
+    )
+
+    class Meta:
+        db_table = '"answers"'
+        verbose_name = _("Question Comment")
+        verbose_name_plural = _("Question Comments")
+        ordering = ("date",)
