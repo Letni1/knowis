@@ -1,5 +1,5 @@
 from django.urls import re_path
-from .api import views
+from knowis.questions.api import views
 
 
 

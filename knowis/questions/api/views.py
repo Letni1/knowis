@@ -4,7 +4,7 @@ from rest_framework.generics import  (
 )
 from rest_framework.permissions import IsAuthenticated
 
-from ..models import Question
+from knowis.questions.models import Question
 from .serializers import QuestionSerializer
 
 
