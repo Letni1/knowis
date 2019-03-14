@@ -79,9 +79,11 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'rest_auth',
+    'rest_framework.authtoken',
 ]
 LOCAL_APPS = [
-    'knowis.users.apps.UsersAppConfig',
+    # 'knowis.users.apps.UsersAppConfig',
     'knowis.questions.apps.QuestionsConfig',
     'knowis.useraccount.apps.UseraccountConfig',
     # Your stuff: custom apps go here
@@ -92,9 +94,9 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {
-    'sites': 'knowis.contrib.sites.migrations'
-}
+# MIGRATION_MODULES = {
+#     'sites': 'knowis.contrib.sites.migrations'
+# }
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -103,12 +105,12 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-# https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-AUTH_USER_MODEL = 'users.User'
-# https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = 'users:redirect'
-# https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = 'account_login'
+# # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
+# AUTH_USER_MODEL = 'users.User'
+# # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+# LOGIN_REDIRECT_URL = 'users:redirect'
+# # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+# LOGIN_URL = 'account_login'
 
 # PASSWORDS
 # ------------------------------------------------------------------------------

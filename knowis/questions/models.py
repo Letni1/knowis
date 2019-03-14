@@ -2,11 +2,10 @@ import markdown
 import uuid as uuid_lib
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
 
-User = get_user_model()
 
 class Question(models.Model):
     DRAFT = 'D'
@@ -35,3 +34,23 @@ class Question(models.Model):
         verbose_name = _("Question")
         verbose_name_plural = _("Questions")
         ordering = ("-create_date",)
+
+
+class QuestionComment(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=500)
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    upvotes = models.IntegerField(default=0)
+    downvotes = models.IntegerField(default=0)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid_lib.uuid4,
+        editable=False
+    )
+
+    class Meta:
+        db_table = '"answers"'
+        verbose_name = _("Question Comment")
+        verbose_name_plural = _("Question Comments")
+        ordering = ("date",)
