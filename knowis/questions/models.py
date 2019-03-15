@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 
 
 class Question(models.Model):
+    name = 'Question'
     DRAFT = 'D'
     PUBLISHED = 'P'
     STATUS = (
@@ -19,7 +20,7 @@ class Question(models.Model):
     slug = models.SlugField(max_length=255, null=True, blank=True)
     content = models.TextField(max_length=5000, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
-    create_user = models.OneToOneField(User, on_delete=models.CASCADE)
+    create_user = models.ForeignKey(User, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(blank=True, null=True)
     # update_user = models.ForeignKey(User, null=True, blank=True, related_name='+', on_delete=models.CASCADE)
@@ -35,7 +36,12 @@ class Question(models.Model):
         verbose_name_plural = _("Questions")
         ordering = ("-create_date",)
 
+    def __str__(self):
+        return self.title
 
+    @property
+    def get_create_user(self):
+        return self.create_user.get_username()
 
 class QuestionComment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
