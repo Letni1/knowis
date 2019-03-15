@@ -54,3 +54,11 @@ class QuestionComment(models.Model):
         verbose_name = _("Question Comment")
         verbose_name_plural = _("Question Comments")
         ordering = ("date",)
+
+
+class UserUpvote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.ForeignKey(QuestionComment, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = '"upvotes"'
