@@ -36,8 +36,8 @@ class Question(models.Model):
         verbose_name_plural = _("Questions")
         ordering = ("-create_date",)
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
 
     @property
     def get_create_user(self):
