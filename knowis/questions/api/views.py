@@ -1,15 +1,17 @@
-from ..models import Question, QuestionComment
-from .serializers import QuestionSerializer, QuestionCommentSerializer
-
 from django.contrib.auth.models import User
 from django.http import Http404
 from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveAPIView, RetrieveDestroyAPIView)
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
+
+from ..models import Question, QuestionComment
+from .serializers import QuestionSerializer, QuestionCommentSerializer
+from .permissions import IsOwnerOrReadOnly
 
 
 class UserQuestionGetList(APIView):
@@ -28,9 +30,25 @@ class UserQuestionGetList(APIView):
         return Response(serializer.data)
 
 
+class QuestionListBySlug(APIView):
+    permission_classes = (AllowAny, )
+
+    def get_queryset(self):
+        try:
+            slug = self.kwargs['slug']
+            queryset = Question.objects.filter(slug=slug)
+            return queryset
+        except Question.DoesNotExist:
+            return Http404
+
+    def get(self, request, slug):
+        question = self.get_queryset()
+        serializer = QuestionSerializer(question, many=True)
+        return Response(serializer.data)
+
+
 class UserQuestionListDeleteByUUID(APIView):
-    permission_classes = (IsAuthenticated, )
-    lookup_field = 'uuid'
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         try:
@@ -57,6 +75,5 @@ class QuestionGetList(ListCreateAPIView):
         return super(QuestionGetList, self).perform_create(serializer)
 
     queryset = Question.objects.all()
-    permission_classes = (IsAuthenticated, )
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'

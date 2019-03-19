@@ -48,7 +48,7 @@ DATABASES = {
         'NAME': 'knowis',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'HOST': 'databse1',
         'PORT': '5432',
     }
 }

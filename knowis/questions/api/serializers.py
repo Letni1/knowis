@@ -6,13 +6,12 @@ from ...questions.models import Question, QuestionComment
 
 class QuestionSerializer(serializers.ModelSerializer):
     get_create_user = serializers.ReadOnlyField()
-    get_slug = serializers.ReadOnlyField()
 
     class Meta:
         model = Question
         # fields = '__all__'
         fields = ('title', 'content', 'status', 'create_date',
-                  'update_date', 'get_create_user', 'uuid', 'get_slug')
+                  'update_date', 'get_create_user', 'uuid', 'slug')
 
 
 class QuestionCommentSerializer(serializers.ModelSerializer):

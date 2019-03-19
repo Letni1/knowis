@@ -43,11 +43,11 @@ class Question(models.Model):
     def get_create_user(self):
         return self.create_user.get_username()
 
-    @property
-    def get_slug(self):
-        slug_str = "{}".format(self.title.lower())
-        self.slug = slugify(slug_str)
-        return self.title
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug_str = "{}".format(self.title.lower())
+            self.slug = slugify(slug_str)
+        super(Question, self).save(*args, **kwargs)
 
 
 class QuestionComment(models.Model):
