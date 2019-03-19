@@ -7,7 +7,7 @@
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name="DJANGO_SETTINGS_MODULE" value="config.settings.local" />
     </envs>
-    <option name="SDK_HOME" value="$USER_HOME$/.virtualenvs/knowis-zThGOBrp/bin/python" />
+    <option name="SDK_HOME" value="$USER_HOME$/.local/share/virtualenvs/knowis-iC81H4_A/bin/python" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
