@@ -126,6 +126,12 @@ Deployment
 
 The following details how to deploy this application.
 
+DONE SO FAR
+-----------
+- Auth;
+- List all questions;
+- List by user;
+- Get / Delete user questions by uuid;
 
 
 

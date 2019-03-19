@@ -43,6 +43,13 @@ class Question(models.Model):
     def get_create_user(self):
         return self.create_user.get_username()
 
+    @property
+    def get_slug(self):
+        slug_str = "{}".format(self.title.lower())
+        self.slug = slugify(slug_str)
+        return self.title
+
+
 class QuestionComment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500)
