@@ -30,8 +30,8 @@ class UserQuestionGetList(APIView):
         return Response(serializer.data)
 
 
-class QuestionListBySlug(APIView):
-    permission_classes = (AllowAny, )
+class QuestionGetBySlug(APIView):
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         try:
@@ -47,7 +47,7 @@ class QuestionListBySlug(APIView):
         return Response(serializer.data)
 
 
-class UserQuestionListDeleteByUUID(APIView):
+class UserQuestionGetPutDeleteByUUID(APIView):
     permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
@@ -68,6 +68,8 @@ class UserQuestionListDeleteByUUID(APIView):
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def put(self, request, uuid):
+        pass
 
 class QuestionGetList(ListCreateAPIView):
     def perform_create(self, serializer):

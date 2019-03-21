@@ -15,13 +15,13 @@ urlpatterns = [
 #             name='question_rest_api'
 #             ),
     re_path(r'^questions/(?P<slug>[-\w]+)/$',
-            view=views.QuestionListBySlug.as_view(),
+            view=views.QuestionGetBySlug.as_view(),
             name='question_rest_api'
             ),
     re_path(r'^myquestions/$', view=views.UserQuestionGetList.as_view(),
             name='question_rest_api'),
     re_path(r'^myquestions/(?P<uuid>[-\w]+)/$',
-            view=views.UserQuestionListDeleteByUUID.as_view(),
+            view=views.UserQuestionGetPutDeleteByUUID.as_view(),
             name='question_rest_api'
             ),
 ]
