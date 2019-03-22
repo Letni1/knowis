@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveAPIView, RetrieveDestroyAPIView)
 from rest_framework.views import APIView
@@ -33,48 +34,61 @@ class UserQuestionGetList(APIView):
 class QuestionGetBySlug(APIView):
     permission_classes = (IsOwnerOrReadOnly, )
 
-    def get_queryset(self):
+    def get_object(self, slug):
         try:
-            slug = self.kwargs['slug']
-            queryset = Question.objects.filter(slug=slug)
+            queryset = Question.objects.get(slug=slug)
             return queryset
         except Question.DoesNotExist:
             return Http404
 
     def get(self, request, slug):
-        question = self.get_queryset()
+        question = self.get_object(slug=slug)
         serializer = QuestionSerializer(question, many=True)
         return Response(serializer.data)
+
+    def delete(self, request, slug):
+        question = self.get_object(slug=slug)
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, slug):
+        question = self.get_object(slug=slug)
+        serializer = QuestionSerializer(question, data=request.data)
+        if serializers.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserQuestionGetPutDeleteByUUID(APIView):
     permission_classes = (IsOwnerOrReadOnly, )
 
-    def get_queryset(self):
+    def get_object(self, uuid):
         try:
-            uuid = self.kwargs['uuid']
             queryset = Question.objects.filter(uuid=uuid)
             return queryset
         except Question.DoesNotExist:
             return Http404
 
     def get(self, request, uuid):
-        question = self.get_queryset()
+        question = self.get_object(uuid=uuid)
         serializer = QuestionSerializer(question, many=True)
         return Response(serializer.data)
 
     def delete(self, request, uuid):
-        question = self.get_queryset()
+        question = self.get_object(uuid=uuid)
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, uuid):
-        pass
+        question = self.get_object(uuid=uuid)
 
-class QuestionGetList(ListCreateAPIView):
+
+class QuestionListCreateAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.validated_data['create_user'] = self.request.user
-        return super(QuestionGetList, self).perform_create(serializer)
+        return super(QuestionListCreateAPIView,
+                     self).perform_create(serializer)
 
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer

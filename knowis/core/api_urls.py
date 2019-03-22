@@ -6,7 +6,7 @@ from ..questions.api import views
 app_name = 'api'
 
 urlpatterns = [
-    re_path(r'^questions/$', view=views.QuestionGetList.as_view(),
+    re_path(r'^questions/$', view=views.QuestionListCreateAPIView.as_view(),
             name='questions_rest_api'),
 #     re_path(r'^comments/$', view=views.QuestionCommentListCreateAPIView.as_view(),
 #             name='questions_rest_api'),
