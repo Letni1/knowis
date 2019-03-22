@@ -9,9 +9,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        # fields = '__all__'
-        fields = ('title', 'content', 'status', 'create_date',
-                  'update_date', 'get_create_user', 'uuid', 'slug')
+        fields = '__all__'
+        # fields = ('title', 'content', 'status', 'create_date',
+        #           'update_date', 'get_create_user', 'uuid', 'slug')
 
 
 class QuestionCommentSerializer(serializers.ModelSerializer):

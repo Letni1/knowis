@@ -2,7 +2,9 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.generics import (ListCreateAPIView,
-                                     RetrieveAPIView, RetrieveDestroyAPIView)
+                                     RetrieveAPIView, RetrieveDestroyAPIView,
+                                     GenericAPIView)
+from rest_framework import mixins
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -31,33 +33,36 @@ class UserQuestionGetList(APIView):
         return Response(serializer.data)
 
 
-class QuestionGetBySlug(APIView):
+class QuestionGetBySlug(mixins.ListModelMixin,
+                        mixins.CreateModelMixin,
+                        GenericAPIView):
     permission_classes = (IsOwnerOrReadOnly, )
-
-    def get_object(self, slug):
-        try:
-            queryset = Question.objects.get(slug=slug)
-            return queryset
-        except Question.DoesNotExist:
-            return Http404
-
-    def get(self, request, slug):
-        question = self.get_object(slug=slug)
-        serializer = QuestionSerializer(question, many=True)
-        return Response(serializer.data)
-
-    def delete(self, request, slug):
-        question = self.get_object(slug=slug)
-        question.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def put(self, request, slug):
-        question = self.get_object(slug=slug)
-        serializer = QuestionSerializer(question, data=request.data)
-        if serializers.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    slug = kwargs['']
+    queryset = Question.objects.filter(slug=slug)
+    # def get_object(self, slug):
+    #     try:
+    #         question = Question.objects.get(slug=slug)
+    #         return question
+    #     except Question.DoesNotExist:
+    #         return Http404
+    #
+    # def get(self, request, slug, format=None):
+    #     question = self.get_object(slug=slug)
+    #     serializer = QuestionSerializer(question, many=True)
+    #     return Response(serializer.data)
+    #
+    # def delete(self, request, slug):
+    #     question = self.get_object(slug=slug)
+    #     question.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    #
+    # def put(self, request, slug):
+    #     question = self.get_object(slug)
+    #     serializer = QuestionSerializer(question, data=request.data, partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserQuestionGetPutDeleteByUUID(APIView):
