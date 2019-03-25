@@ -13,15 +13,15 @@ urlpatterns = [
 #             view=views.QuestionCommentDestroyAPIView.as_view(),
 #             name='question_rest_api'
 #             ),
-    re_path(r'^questions/u/$',
-            view=views.UserQuestionGetList.as_view(),
+    re_path(r'^questions/u/(?P<username>.+)/$',
+            view=views.QuestionListAPIViewByUser.as_view(),
             name='question_rest_api'
             ),
     re_path(r'^questions/(?P<slug>.+)/$',
             view=views.QuestionRetrieveUpdateDestroyBySlug.as_view(),
             name='question_rest_api'
             ),
-    re_path(r'^myquestions/$', view=views.UserQuestionGetList.as_view(),
+    re_path(r'^myquestions/$', view=views.QuestionListAPIViewByUser.as_view(),
             name='question_rest_api'),
     re_path(r'^myquestions/(?P<uuid>[-\w]+)/$',
             view=views.UserQuestionGetUpdateDeleteByUUID.as_view(),

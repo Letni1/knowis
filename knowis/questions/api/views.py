@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+                                     RetrieveUpdateDestroyAPIView,
+                                     ListAPIView)
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -16,12 +18,20 @@ from .serializers import QuestionSerializer, QuestionCommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
-class UserQuestionGetList(RetrieveUpdateDestroyAPIView):
-    queryset = Question.objects.all()
-    permission_classes = (IsOwnerOrReadOnly, )
+class QuestionListAPIViewByUser(ListAPIView):
     serializer_class = QuestionSerializer
-    pass
 
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        username = self.kwargs['username']
+        queryset = Question.objects.filter(create_user__username=username)
+        if queryset:
+            return queryset
+        else:
+            raise NotFound()
 
 
 class QuestionRetrieveUpdateDestroyBySlug(RetrieveUpdateDestroyAPIView):
