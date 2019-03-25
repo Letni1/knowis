@@ -2,7 +2,6 @@ from django.urls import re_path
 from ..questions.api import views
 
 
-
 app_name = 'api'
 
 urlpatterns = [
@@ -14,14 +13,18 @@ urlpatterns = [
 #             view=views.QuestionCommentDestroyAPIView.as_view(),
 #             name='question_rest_api'
 #             ),
-    re_path(r'^questions/(?P<slug>[-\w]+)/$',
-            view=views.QuestionGetBySlug.as_view(),
+    re_path(r'^questions/u/$',
+            view=views.UserQuestionGetList.as_view(),
+            name='question_rest_api'
+            ),
+    re_path(r'^questions/(?P<slug>.+)/$',
+            view=views.QuestionRetrieveUpdateDestroyBySlug.as_view(),
             name='question_rest_api'
             ),
     re_path(r'^myquestions/$', view=views.UserQuestionGetList.as_view(),
             name='question_rest_api'),
     re_path(r'^myquestions/(?P<uuid>[-\w]+)/$',
-            view=views.UserQuestionGetPutDeleteByUUID.as_view(),
+            view=views.UserQuestionGetUpdateDeleteByUUID.as_view(),
             name='question_rest_api'
             ),
 ]

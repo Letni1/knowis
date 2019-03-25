@@ -40,7 +40,7 @@ class Question(models.Model):
         return self.title
 
     @property
-    def get_create_user(self):
+    def username(self):
         return self.create_user.get_username()
 
     def save(self, *args, **kwargs):
