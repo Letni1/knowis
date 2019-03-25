@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveAPIView,
@@ -34,6 +35,13 @@ class QuestionListAPIViewByUser(ListAPIView):
             raise NotFound()
 
 
+class QuestionListAPIViewByMult(ListAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('create_user', 'status')
+
+
 class QuestionRetrieveUpdateDestroyBySlug(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsOwnerOrReadOnly, )
     queryset = Question.objects.all()
@@ -41,7 +49,7 @@ class QuestionRetrieveUpdateDestroyBySlug(RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
 
 
-class UserQuestionGetUpdateDeleteByUUID(QuestionRetrieveUpdateDestroyBySlug):
+class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     lookup_field = 'uuid'
 
 
