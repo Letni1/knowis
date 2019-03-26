@@ -1,9 +1,16 @@
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
+from django_filters import rest_framework as filters
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
-                                     RetrieveAPIView, RetrieveDestroyAPIView)
+                                     RetrieveAPIView,
+                                     RetrieveUpdateDestroyAPIView,
+                                     ListAPIView)
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import (IsAuthenticated,
+                                        AllowAny, IsAuthenticatedOrReadOnly)
 
 from rest_framework.response import Response
 from rest_framework import serializers
@@ -14,66 +21,76 @@ from .serializers import QuestionSerializer, QuestionCommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
-class UserQuestionGetList(APIView):
-    permission_classes = (IsAuthenticated, )
+class QuestionListAPIViewByUser(ListAPIView):
+    """
+    List the questions by username from url, paginated
+    """
+    pagination_class = PageNumberPagination
+    serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        try:
-            user = self.request.user
-            return Question.objects.filter(create_user=user)
-        except Question.DoesNotExist:
-            raise Http404
-
-    def get(self, request):
-        question = self.get_queryset()
-        serializer = QuestionSerializer(question, many=True)
-        return Response(serializer.data)
-
-
-class QuestionListBySlug(APIView):
-    permission_classes = (AllowAny, )
-
-    def get_queryset(self):
-        try:
-            slug = self.kwargs['slug']
-            queryset = Question.objects.filter(slug=slug)
+        """
+        This view should return a list of all the questions for
+        the user as determined by the username portion of the URL.
+        """
+        username = self.kwargs['username']
+        queryset = Question.objects.filter(create_user__username=username)
+        if queryset:
             return queryset
-        except Question.DoesNotExist:
-            return Http404
-
-    def get(self, request, slug):
-        question = self.get_queryset()
-        serializer = QuestionSerializer(question, many=True)
-        return Response(serializer.data)
+        else:
+            raise NotFound()
 
 
-class UserQuestionListDeleteByUUID(APIView):
+class QuestionListAPIViewBySlug(ListAPIView):
+    """
+    List the questions by slug from url, paginated
+    """
+    pagination_class = PageNumberPagination
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the questions for
+        the slug as determined by the slug portion of the URL.
+        """
+        slug = self.kwargs['slug']
+        queryset = Question.objects.filter(slug=slug)
+        if queryset:
+            return queryset
+        else:
+            raise NotFound()
+
+
+class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by uuid
+    """
     permission_classes = (IsOwnerOrReadOnly, )
-
-    def get_queryset(self):
-        try:
-            uuid = self.kwargs['uuid']
-            queryset = Question.objects.filter(uuid=uuid)
-            return queryset
-        except Question.DoesNotExist:
-            return Http404
-
-    def get(self, request, uuid):
-        question = self.get_queryset()
-        serializer = QuestionSerializer(question, many=True)
-        return Response(serializer.data)
-
-    def delete(self, request, uuid):
-        question = self.get_queryset()
-        question.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class QuestionGetList(ListCreateAPIView):
-    def perform_create(self, serializer):
-        serializer.validated_data['create_user'] = self.request.user
-        return super(QuestionGetList, self).perform_create(serializer)
-
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
+
+
+class QuestionListCreateAPIView(ListCreateAPIView):
+    """
+    Returns the list of questions with pagination and filtering
+    Authenticated user can post questions
+    """
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    lookup_field = 'uuid'
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('create_user', 'status')
+
+    def perform_create(self, serializer):
+        """
+        Overwrite create_user field by user logged in.
+        """
+        serializer.validated_data['create_user'] = self.request.user
+        return super(QuestionListCreateAPIView,
+                     self).perform_create(serializer)
+
+

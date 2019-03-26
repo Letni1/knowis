@@ -1,16 +1,32 @@
 version: '3'
+
 services:
+
   djangoapp:
     build: .
     volumes:
       - .:/opt/services/djangoapp
-    ports:
-      - 8000:8000
     networks:
+      - caddy_network
       - database1_network
+    depends_on:
+      - migration
+      - database1
+    expose:
+      - 8000
+
+  caddy:
+    image: jumanjiman/caddy
+    depends_on:
+      - djangoapp
+    ports:
+      - "80:8000"
+    command: -port 8000 -host 0.0.0.0 "proxy / djangoapp:8000 { }"
+    networks:
+      - caddy_network
+
   database1:
     image: postgres
-    hostname: database1
     ports:
       - "5432:5432"
     environment:
@@ -23,8 +39,33 @@ services:
     networks:
       - database1_network
 
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - database1
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    restart: unless-stopped
+    networks:
+      - database1_network
+
+  migration:
+    build: .
+    command: ./manage.py migrate
+    volumes:
+      - .:/opt/services/djangoapp
+    depends_on:
+      - database1
+    networks:
+      - database1_network
+
 networks:
-  database1_network:  # <-- add the bridge
+  caddy_network:
+    driver: bridge
+  database1_network:
     driver: bridge
 
 volumes:

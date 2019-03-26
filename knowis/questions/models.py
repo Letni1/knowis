@@ -40,7 +40,7 @@ class Question(models.Model):
         return self.title
 
     @property
-    def get_create_user(self):
+    def username(self):
         return self.create_user.get_username()
 
     def save(self, *args, **kwargs):
@@ -48,6 +48,21 @@ class Question(models.Model):
             slug_str = "{}".format(self.title.lower())
             self.slug = slugify(slug_str)
         super(Question, self).save(*args, **kwargs)
+
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=20)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = '"question_tags"'
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+        unique_together = (('tag', 'question'),)
+        index_together = [['tag', 'question'], ]
+
+    def ___str__(self):
+        return self.tag
 
 
 class QuestionComment(models.Model):

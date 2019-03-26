@@ -48,7 +48,7 @@ DATABASES = {
         'NAME': 'knowis',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'database1',
+        'HOST': 'postgres',
         'PORT': '5432',
     }
 }
@@ -60,7 +60,9 @@ ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 # REST_FRAMEWORK
 # ------------------------------------------------------------------------------
-
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 20
+}
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
@@ -81,6 +83,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_auth',
     'rest_framework.authtoken',
+    'django_filters',
 ]
 LOCAL_APPS = [
     # 'knowis.users.apps.UsersAppConfig',

@@ -43,6 +43,7 @@ django_coverage_plugin = "==1.6.0"
 markdown = "*"
 django-filter = "*"
 django-rest-auth = "*"
+djangorestframework-jwt = "*"
 
 [requires]
 python_version = "3.6"
