@@ -20,6 +20,9 @@ from .permissions import IsOwnerOrReadOnly
 
 
 class QuestionListAPIViewByUser(ListAPIView):
+    """
+    List the questions by username from url
+    """
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
@@ -36,6 +39,9 @@ class QuestionListAPIViewByUser(ListAPIView):
 
 
 class QuestionListAPIViewByMult(ListAPIView):
+    """
+    Filtering the questions by create_user, status fields
+    """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -43,20 +49,33 @@ class QuestionListAPIViewByMult(ListAPIView):
 
 
 class QuestionRetrieveUpdateDestroyBySlug(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by slug
+    """
     permission_classes = (IsOwnerOrReadOnly, )
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     lookup_field = 'slug'
 
 
-class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+class UserQuestionGetUpdateDeleteByUUID(QuestionRetrieveUpdateDestroyBySlug):
+    """
+    Retrieve, Update, Destroy questions by uuid
+
+    """
     lookup_field = 'uuid'
 
 
 class QuestionListCreateAPIView(ListCreateAPIView):
-    permission_classes = (AllowAny, )
+    """
+    List, Post questions
+    """
+    permission_classes = (IsAuthenticated, )
 
     def perform_create(self, serializer):
+        """
+        Overwrite create_user field by user logged in.
+        """
         serializer.validated_data['create_user'] = self.request.user
         return super(QuestionListCreateAPIView,
                      self).perform_create(serializer)

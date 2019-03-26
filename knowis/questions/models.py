@@ -50,6 +50,21 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
 
 
+class Tag(models.Model):
+    tag = models.CharField(max_length=20)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = '"question_tags"'
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+        unique_together = (('tag', 'question'),)
+        index_together = [['tag', 'question'], ]
+
+    def ___str__(self):
+        return self.tag
+
+
 class QuestionComment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500)
