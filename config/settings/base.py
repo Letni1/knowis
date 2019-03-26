@@ -60,7 +60,9 @@ ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 # REST_FRAMEWORK
 # ------------------------------------------------------------------------------
-
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 20
+}
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [

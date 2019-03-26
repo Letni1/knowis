@@ -7,8 +7,10 @@ from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView,
                                      ListAPIView)
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import (IsAuthenticated,
+                                        AllowAny, IsAuthenticatedOrReadOnly)
 
 from rest_framework.response import Response
 from rest_framework import serializers
@@ -21,13 +23,15 @@ from .permissions import IsOwnerOrReadOnly
 
 class QuestionListAPIViewByUser(ListAPIView):
     """
-    List the questions by username from url
+    List the questions by username from url, paginated
     """
+
+    pagination_class = PageNumberPagination
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
         """
-        This view should return a list of all the purchases for
+        This view should return a list of all the questions for
         the user as determined by the username portion of the URL.
         """
         username = self.kwargs['username']
@@ -38,39 +42,50 @@ class QuestionListAPIViewByUser(ListAPIView):
             raise NotFound()
 
 
-class QuestionListAPIViewByMult(ListAPIView):
+class QuestionListAPIViewBySlug(ListAPIView):
     """
-    Filtering the questions by create_user, status fields
+    List the questions by slug from url, paginated
     """
+    pagination_class = PageNumberPagination
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('create_user', 'status')
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the questions for
+        the slug as determined by the slug portion of the URL.
+        """
+        slug = self.kwargs['slug']
+        queryset = Question.objects.filter(slug=slug)
+        if queryset:
+            return queryset
+        else:
+            raise NotFound()
 
 
-class QuestionRetrieveUpdateDestroyBySlug(RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, Update, Destroy questions by slug
-    """
-    permission_classes = (IsOwnerOrReadOnly, )
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-    lookup_field = 'slug'
-
-
-class UserQuestionGetUpdateDeleteByUUID(QuestionRetrieveUpdateDestroyBySlug):
+class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update, Destroy questions by uuid
 
     """
+    permission_classes = (IsOwnerOrReadOnly, )
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
     lookup_field = 'uuid'
 
 
 class QuestionListCreateAPIView(ListCreateAPIView):
     """
-    List, Post questions
+    Returns the list of questions with pagination and filtering
+    Authenticated user can post questions
     """
-    permission_classes = (IsAuthenticated, )
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    lookup_field = 'uuid'
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('create_user', 'status')
 
     def perform_create(self, serializer):
         """
@@ -80,6 +95,4 @@ class QuestionListCreateAPIView(ListCreateAPIView):
         return super(QuestionListCreateAPIView,
                      self).perform_create(serializer)
 
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-    lookup_field = 'uuid'
+
