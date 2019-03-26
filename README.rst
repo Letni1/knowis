@@ -129,9 +129,9 @@ The following details how to deploy this application.
 DONE SO FAR
 -----------
 - Auth;
-- List all questions;
-- List by user;
-- Get / Delete user questions by uuid;
+- List / Create questions;
+- Filtering by user/status;
+-
 
 
 

@@ -25,7 +25,6 @@ class QuestionListAPIViewByUser(ListAPIView):
     """
     List the questions by username from url, paginated
     """
-
     pagination_class = PageNumberPagination
     serializer_class = QuestionSerializer
 
@@ -66,7 +65,6 @@ class QuestionListAPIViewBySlug(ListAPIView):
 class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update, Destroy questions by uuid
-
     """
     permission_classes = (IsOwnerOrReadOnly, )
     queryset = Question.objects.all()
