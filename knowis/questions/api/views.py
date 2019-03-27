@@ -86,7 +86,7 @@ class QuestionListCreateAPIView(ListCreateAPIView):
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('create_user', 'tag')
+    filterset_fields = ('create_user', 'tags')
 
     def perform_create(self, serializer):
         """

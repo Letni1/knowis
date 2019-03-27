@@ -85,6 +85,7 @@ THIRD_PARTY_APPS = [
     'rest_auth',
     'rest_framework.authtoken',
     'django_filters',
+    'corsheaders',
 ]
 LOCAL_APPS = [
     # 'knowis.users.apps.UsersAppConfig',
@@ -147,6 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -172,6 +174,11 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
+# CORS
+# ------------------------------------------------------------------------------
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000/'
+)
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root

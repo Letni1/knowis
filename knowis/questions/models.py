@@ -7,6 +7,18 @@ from datetime import datetime
 from django.template.defaultfilters import slugify
 
 
+class Tag(models.Model):
+    tag = models.CharField(max_length=64, unique=True)
+
+    class Meta:
+        db_table = '"question_tags"'
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+    def __str__(self):
+        return self.tag
+
+
 class Question(models.Model):
     name = 'Question'
     DRAFT = 'D'
@@ -21,6 +33,7 @@ class Question(models.Model):
     content = models.TextField(max_length=5000, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
     create_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(blank=True, null=True)
     # update_user = models.ForeignKey(User, null=True, blank=True, related_name='+', on_delete=models.CASCADE)
@@ -48,21 +61,6 @@ class Question(models.Model):
             slug_str = "{}".format(self.title.lower())
             self.slug = slugify(slug_str)
         super(Question, self).save(*args, **kwargs)
-
-
-class Tag(models.Model):
-    tag = models.CharField(max_length=20)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = '"question_tags"'
-        verbose_name = _("Tag")
-        verbose_name_plural = _("Tags")
-        unique_together = (('tag', 'question'),)
-        index_together = [['tag', 'question'], ]
-
-    def __str__(self):
-        return self.tag
 
 
 class QuestionComment(models.Model):
