@@ -63,6 +63,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 REST_FRAMEWORK = {
     'PAGE_SIZE': 20
 }
+REST_USE_JWT = True
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [

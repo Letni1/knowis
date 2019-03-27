@@ -61,7 +61,7 @@ class Tag(models.Model):
         unique_together = (('tag', 'question'),)
         index_together = [['tag', 'question'], ]
 
-    def ___str__(self):
+    def __str__(self):
         return self.tag
 
 
