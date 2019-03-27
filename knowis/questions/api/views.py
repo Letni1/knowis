@@ -23,18 +23,20 @@ from .permissions import IsOwnerOrReadOnly
 
 class QuestionListAPIViewByUser(ListAPIView):
     """
-    List the questions by username from url, paginated
+    List the Published questions by username from url, paginated
     """
     pagination_class = PageNumberPagination
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
         """
-        This view should return a list of all the questions for
+        This view should return a list of all the Published questions for
         the user as determined by the username portion of the URL.
         """
         username = self.kwargs['username']
-        queryset = Question.objects.filter(create_user__username=username)
+        queryset = Question.objects.filter(
+            create_user__username=username
+        ).filter(status='P')
         if queryset:
             return queryset
         else:
@@ -43,19 +45,20 @@ class QuestionListAPIViewByUser(ListAPIView):
 
 class QuestionListAPIViewBySlug(ListAPIView):
     """
-    List the questions by slug from url, paginated
+    List the Published questions by slug from url, paginated
     """
     pagination_class = PageNumberPagination
-    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
         """
-        This view should return a list of all the questions for
+        This view should return a list of all the Published questions for
         the slug as determined by the slug portion of the URL.
         """
         slug = self.kwargs['slug']
-        queryset = Question.objects.filter(slug=slug)
+        queryset = Question.objects.filter(
+            slug=slug
+        ).filter(status='P')
         if queryset:
             return queryset
         else:
@@ -79,11 +82,11 @@ class QuestionListCreateAPIView(ListCreateAPIView):
     """
     pagination_class = PageNumberPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = Question.objects.all()
+    queryset = Question.objects.filter(status='P')
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('create_user', 'status')
+    filterset_fields = ('create_user', 'tags')
 
     def perform_create(self, serializer):
         """
