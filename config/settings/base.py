@@ -58,12 +58,6 @@ DATABASES = {
 ROOT_URLCONF = 'config.urls'
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'config.wsgi.application'
-# REST_FRAMEWORK
-# ------------------------------------------------------------------------------
-REST_FRAMEWORK = {
-    'PAGE_SIZE': 20
-}
-REST_USE_JWT = True
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
@@ -173,12 +167,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
-
-# CORS
-# ------------------------------------------------------------------------------
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000/'
-)
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
@@ -297,3 +285,14 @@ SOCIALACCOUNT_ADAPTER = 'knowis.users.adapters.SocialAccountAdapter'
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# CORS
+# ------------------------------------------------------------------------------
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000/'
+)
+# REST_FRAMEWORK
+# ------------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 20
+}
+REST_USE_JWT = True

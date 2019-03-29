@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from rest_framework.response import Response
 
 from ...questions.models import Question, QuestionComment, Tag
 
@@ -8,20 +8,18 @@ class QuestionSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     tags = serializers.SlugRelatedField(many=True, slug_field='tag',
                                         queryset=Tag.objects.all())
+    get_num_comments = serializers.ReadOnlyField()
+    get_comments = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = Question
         fields = '__all__'
-        # fields = ('title', 'content', 'status', 'create_date',
-        #           'update_date', 'get_create_user', 'uuid', 'slug')
-
-    def to_internal_value(self, data):
-        for tag_name in data.get('tags', []):
-            Tag.objects.get_or_create(tag=tag_name)
-        return super().to_internal_value(data)
 
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
+    question_title = serializers.ReadOnlyField()
+
     class Meta:
         model = QuestionComment
         fields = '__all__'
+

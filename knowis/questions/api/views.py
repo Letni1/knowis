@@ -1,6 +1,3 @@
-from django.contrib.auth.models import User
-from django.http import Http404
-from django.core.exceptions import ObjectDoesNotExist
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
@@ -13,12 +10,9 @@ from rest_framework.permissions import (IsAuthenticated,
                                         AllowAny, IsAuthenticatedOrReadOnly)
 
 from rest_framework.response import Response
-from rest_framework import serializers
-from rest_framework import status
-
 from ..models import Question, QuestionComment
 from .serializers import QuestionSerializer, QuestionCommentSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
 
 class QuestionListAPIViewByUser(ListAPIView):
@@ -77,7 +71,7 @@ class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
 
 class QuestionListCreateAPIView(ListCreateAPIView):
     """
-    Returns the list of questions with pagination and filtering
+    Returns the list of questions with pagination and filtering by tags/user
     Authenticated user can post questions
     """
     pagination_class = PageNumberPagination
@@ -97,3 +91,26 @@ class QuestionListCreateAPIView(ListCreateAPIView):
                      self).perform_create(serializer)
 
 
+class CommentListCreateApiView(ListCreateAPIView):
+    serializer_class = QuestionCommentSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    queryset = QuestionComment.objects.all()
+    lookup_field = 'uuid'
+
+    def perform_create(self, serializer):
+        """
+        Overwrite create_user field by user logged in.
+        """
+        serializer.validated_data['user'] = self.request.user
+        return super(CommentListCreateApiView,
+                     self).perform_create(serializer)
+
+
+class UserCommentGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by uuid
+    """
+    permission_classes = (IsUserOrReadOnly, )
+    queryset = QuestionComment.objects.all()
+    serializer_class = QuestionCommentSerializer
+    lookup_field = 'uuid'
