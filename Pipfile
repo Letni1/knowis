@@ -45,6 +45,7 @@ django-filter = "*"
 django-rest-auth = "*"
 djangorestframework-jwt = "*"
 django-cors-headers = "*"
+pydevd = "*"
 
 [requires]
 python_version = "3.6"
