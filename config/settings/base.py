@@ -296,3 +296,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20
 }
 REST_USE_JWT = True
+# Heroku
+# ------------------------------------------------------------------------------
+import django_heroku
+# Then all the way at the bottom of the file
+# ...
+django_heroku.settings(locals())

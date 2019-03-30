@@ -17,8 +17,6 @@ import os
 import sys
 
 from django.core.wsgi import get_wsgi_application
-import pydevd
-pydevd.settrace('localhost', port=1234, stdoutToServer=True, stderrToServer=True, suspend=False)
 
 # This allows easy placement of apps within the interior
 # knowis directory.
