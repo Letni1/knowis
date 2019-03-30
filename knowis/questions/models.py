@@ -1,14 +1,16 @@
 import markdown
+import logging
 import uuid as uuid_lib
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
+from django.forms.models import model_to_dict
 
 
 class Tag(models.Model):
-    tag = models.CharField(max_length=64, unique=True)
+    tag = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
     class Meta:
         db_table = '"question_tags"'
@@ -62,10 +64,20 @@ class Question(models.Model):
             self.slug = slugify(slug_str)
         super(Question, self).save(*args, **kwargs)
 
+    def get_comments(self):
+        """Returns comments sorted by upvotes and then by date"""
+        comments = QuestionComment.objects.filter(question=self)
+        comments = [comment.uuid for comment in comments]
+        return comments
+
+    def get_num_comments(self):
+        return len(QuestionComment.objects.filter(question=self))
+
 
 class QuestionComment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500)
+    replied_to = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     upvotes = models.IntegerField(default=0)
@@ -81,6 +93,9 @@ class QuestionComment(models.Model):
         verbose_name_plural = _("Question Comments")
         ordering = ("date",)
 
+    @property
+    def question_title(self):
+        return self.question.title
 
 class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -88,3 +103,4 @@ class UserUpvote(models.Model):
 
     class Meta:
         db_table = '"question_upvotes"'
+
