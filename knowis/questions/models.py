@@ -95,7 +95,7 @@ class Tag(models.Model):
 class QuestionComment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500)
-    replied_to = models.ForeignKey("self", related_name='children',
+    replied_to = models.ForeignKey("self", related_name='reply',
                                    on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

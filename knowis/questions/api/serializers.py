@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.response import Response
+from rest_framework.fields import empty
 
 from ...questions.models import Question, QuestionComment, Tag
 
@@ -18,7 +19,6 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-
     get_popular_tags = serializers.ReadOnlyField()
 
     class Meta:
@@ -27,17 +27,13 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
-    question_title = serializers.ReadOnlyField()
-    children = serializers.SerializerMethodField()
+    reply = serializers.SerializerMethodField()
 
     class Meta:
         model = QuestionComment
         fields = '__all__'
 
-
-    def validate(self, data):
-        pass
-
-    def get_children(self, obj):
+    @staticmethod
+    def get_reply(obj):
         return [QuestionCommentSerializer().to_representation(cat)
-                for cat in obj.children.all()]
+                for cat in obj.reply.all()]
