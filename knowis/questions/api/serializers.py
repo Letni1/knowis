@@ -6,9 +6,11 @@ from ...questions.models import Question, QuestionComment, Tag
 
 class QuestionSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
-    get_tags = serializers.ListField()
+    get_tags = serializers.ListField(child=serializers.CharField(),
+                                     read_only=True)
     get_num_comments = serializers.ReadOnlyField()
-    get_comments = serializers.ListField(child=serializers.CharField())
+    get_comments = serializers.ListField(child=serializers.CharField(),
+                                         read_only=True)
 
     class Meta:
         model = Question
@@ -26,11 +28,16 @@ class TagSerializer(serializers.ModelSerializer):
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
     question_title = serializers.ReadOnlyField()
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = QuestionComment
         fields = '__all__'
 
-    # def to_representation(self, obj):
-    #     ret = super(QuestionCommentSerializer, self).to_representation(obj)
-    #     if
+
+    def validate(self, data):
+        pass
+
+    def get_children(self, obj):
+        return [QuestionCommentSerializer().to_representation(cat)
+                for cat in obj.children.all()]

@@ -94,7 +94,7 @@ class QuestionListCreateAPIView(ListCreateAPIView):
 
 class CommentListCreateApiView(ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = QuestionComment.objects.all()
+    queryset = QuestionComment.objects.filter(question__status='P')
     serializer_class = QuestionCommentSerializer
     lookup_field = 'uuid'
 
