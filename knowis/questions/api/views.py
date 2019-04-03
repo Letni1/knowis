@@ -10,8 +10,9 @@ from rest_framework.permissions import (IsAuthenticated,
                                         AllowAny, IsAuthenticatedOrReadOnly)
 
 from rest_framework.response import Response
-from ..models import Question, QuestionComment
-from .serializers import QuestionSerializer, QuestionCommentSerializer
+from ..models import Question, QuestionComment, Tag
+from .serializers import (QuestionSerializer, QuestionCommentSerializer,
+                          TagSerializer)
 from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
 
@@ -80,7 +81,7 @@ class QuestionListCreateAPIView(ListCreateAPIView):
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('create_user', 'tags')
+    filterset_fields = ('create_user', )
 
     def perform_create(self, serializer):
         """
@@ -92,9 +93,9 @@ class QuestionListCreateAPIView(ListCreateAPIView):
 
 
 class CommentListCreateApiView(ListCreateAPIView):
-    serializer_class = QuestionCommentSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = QuestionComment.objects.all()
+    serializer_class = QuestionCommentSerializer
     lookup_field = 'uuid'
 
     def perform_create(self, serializer):
@@ -113,4 +114,11 @@ class UserCommentGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsUserOrReadOnly, )
     queryset = QuestionComment.objects.all()
     serializer_class = QuestionCommentSerializer
+    lookup_field = 'uuid'
+
+
+class TagListCreateApiView(ListCreateAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
     lookup_field = 'uuid'

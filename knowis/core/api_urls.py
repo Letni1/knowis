@@ -26,4 +26,7 @@ urlpatterns = [
     re_path(r'^comments/$',
             view=views.CommentListCreateApiView.as_view(),
             name='questions_delete'),
+    re_path(r'^Tags/$',
+            view=views.TagListCreateApiView.as_view(),
+            name='questions_delete'),
 ]

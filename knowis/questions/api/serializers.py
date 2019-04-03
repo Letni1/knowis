@@ -6,13 +6,21 @@ from ...questions.models import Question, QuestionComment, Tag
 
 class QuestionSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
-    tags = serializers.SlugRelatedField(many=True, slug_field='tag',
-                                        queryset=Tag.objects.all())
+    get_tags = serializers.ListField()
     get_num_comments = serializers.ReadOnlyField()
     get_comments = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = Question
+        fields = '__all__'
+
+
+class TagSerializer(serializers.ModelSerializer):
+
+    get_popular_tags = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Tag
         fields = '__all__'
 
 
@@ -23,3 +31,6 @@ class QuestionCommentSerializer(serializers.ModelSerializer):
         model = QuestionComment
         fields = '__all__'
 
+    # def to_representation(self, obj):
+    #     ret = super(QuestionCommentSerializer, self).to_representation(obj)
+    #     if
