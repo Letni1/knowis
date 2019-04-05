@@ -340,4 +340,5 @@ knowis/media/
 
 .pytest_cache/
 .envs/
+.idea/
 
