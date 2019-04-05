@@ -19,7 +19,7 @@ class Question(models.Model):
     )
 
     title = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='images/%Y/%m/%d', null=True, max_length=255)
+    image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True, max_length=255)
     slug = models.SlugField(max_length=255, null=True, blank=True)
     content = models.TextField(max_length=5000, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
