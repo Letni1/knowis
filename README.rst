@@ -8,7 +8,7 @@ smth like quora
      :alt: Built with Cookiecutter Django
 
 
-:License: SOVOK
+:License: MaxLicense
 
 
 Settings
