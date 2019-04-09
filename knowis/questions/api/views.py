@@ -118,3 +118,25 @@ class TagListCreateApiView(ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     lookup_field = 'uuid'
+
+
+class TagQuestionListByTagListApiView(ListAPIView):
+    """
+        List the Published questions by slug from url, paginated
+        """
+    pagination_class = PageNumberPagination
+    serializer_class = QuestionSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the Published questions for
+        the slug as determined by the slug portion of the URL.
+        """
+        tag = self.kwargs['tag']
+        queryset = Question.objects.filter(
+            tag=tag
+        ).filter(status='P')
+        if queryset:
+            return queryset
+        else:
+            raise NotFound()

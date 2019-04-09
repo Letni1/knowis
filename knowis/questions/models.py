@@ -66,7 +66,7 @@ class Question(models.Model):
 
 
 class Tag(models.Model):
-    tag = models.CharField(max_length=64, unique=True)
+    tag = models.CharField(max_length=64)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     class Meta:
