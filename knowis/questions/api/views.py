@@ -1,19 +1,15 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
-                                     RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView,
                                      ListAPIView)
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import APIView
-from rest_framework.permissions import (IsAuthenticated,
-                                        AllowAny, IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly)
 
-from rest_framework.response import Response
 from ..models import Question, QuestionComment, Tag
 from .serializers import (QuestionSerializer, QuestionCommentSerializer,
                           TagSerializer)
-from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
+from ...core.permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
 
 class QuestionListAPIViewByUser(ListAPIView):

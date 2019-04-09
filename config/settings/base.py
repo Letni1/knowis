@@ -80,6 +80,7 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'corsheaders',
+    'imagekit',
 ]
 LOCAL_APPS = [
     # 'knowis.users.apps.UsersAppConfig',

@@ -117,6 +117,10 @@ class QuestionComment(models.Model):
     def question_title(self):
         return self.question.title
 
+    @property
+    def question_uuid(self):
+        return self.question.uuid
+
 
 class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

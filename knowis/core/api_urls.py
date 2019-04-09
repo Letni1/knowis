@@ -30,4 +30,10 @@ urlpatterns = [
     re_path(r'^Tags/$',
             view=q_views.TagListCreateApiView.as_view(),
             name='questions_delete'),
+    re_path(r'^profile/$',
+            view=u_views.UseraccountListAPIView.as_view(),
+            name='user_list'),
+    re_path(r'^profile/d/(?P<uuid>[-\w]+)/$',
+            view=u_views.UseraccountGetUpdateDeleteByUUID.as_view(),
+            name='user_list')
 ]
