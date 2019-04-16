@@ -295,7 +295,7 @@ CORS_ORIGIN_WHITELIST = (
 # REST_FRAMEWORK
 # ------------------------------------------------------------------------------
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 5,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
