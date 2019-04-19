@@ -73,7 +73,6 @@ class QuestionListCreateAPIView(ListCreateAPIView):
 
     """
     pagination_class = PageNumberPagination
-    permission_classes = (IsAuthenticated,)
     queryset = Question.objects.filter(status='P')
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
