@@ -4,7 +4,8 @@ from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveUpdateDestroyAPIView,
                                      ListAPIView)
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
+                                        IsAuthenticated)
 
 from ..models import Question, QuestionComment, Tag
 from .serializers import (QuestionSerializer, QuestionCommentSerializer,
@@ -69,10 +70,10 @@ class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
 class QuestionListCreateAPIView(ListCreateAPIView):
     """
     Returns the list of questions with pagination and filtering by tags/user
-    Authenticated user can post questions
+
     """
     pagination_class = PageNumberPagination
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     queryset = Question.objects.filter(status='P')
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
