@@ -72,6 +72,7 @@ class QuestionListCreateAPIView(ListCreateAPIView):
     Returns the list of questions with pagination and filtering by tags/user
 
     """
+    permission_classes = (IsAuthenticated, )
     pagination_class = PageNumberPagination
     queryset = Question.objects.filter(status='P')
     serializer_class = QuestionSerializer

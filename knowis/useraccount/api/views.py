@@ -3,7 +3,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListAPIView,
                                      ListCreateAPIView,
                                      RetrieveUpdateDestroyAPIView)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from ...core.permissions import IsUserOrReadOnly
 from ..models import Useraccount
 from .serializers import UseraccountSerializer
@@ -11,7 +11,7 @@ from .serializers import UseraccountSerializer
 
 class UseraccountListAPIView(ListAPIView):
 
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = UseraccountSerializer
 
     def get_queryset(self):
