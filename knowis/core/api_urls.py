@@ -10,6 +10,9 @@ urlpatterns = [
             view=q_views.QuestionListAPIViewByUser.as_view(),
             name='questions_by_user'
             ),
+    re_path(r'^questions/(?P<slug>.+)/$',
+            view=q_views.UserQuestionGetUpdateDeleteBySlug.as_view(),
+            name='questions_by_slug'
     re_path(r'^questions/d/(?P<uuid>[-\w]+)/$',
             view=q_views.UserQuestionGetUpdateDeleteByUUID.as_view(),
             name='questions_delete'),
