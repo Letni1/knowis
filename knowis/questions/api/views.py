@@ -62,20 +62,8 @@ class UserQuestionGetUpdateDeleteBySlug(RetrieveUpdateDestroyAPIView):
     """
     permission_classes = (IsOwnerOrReadOnly, )
     serializer_class = QuestionSerializer
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the Published questions for
-        the slug as determined by the slug portion of the URL.
-        """
-        slug = self.kwargs['slug']
-        queryset = Question.objects.filter(
-            slug=slug
-        ).filter(status='P')
-        if queryset:
-            return queryset
-        else:
-            raise NotFound()
+    queryset = Question.objects.all()
+    lookup_field = 'slug'
 
 
 class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
