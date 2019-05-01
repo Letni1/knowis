@@ -56,9 +56,9 @@ class QuestionListAPIViewBySlug(ListAPIView):
             raise NotFound()
 
 
-class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+class UserQuestionGetUpdateDeleteBySlug(RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, Update, Destroy questions by uuid
+    Retrieve, Update, Destroy questions by slug
     """
     permission_classes = (IsOwnerOrReadOnly, )
     serializer_class = QuestionSerializer
@@ -76,6 +76,17 @@ class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
             return queryset
         else:
             raise NotFound()
+
+
+class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by uuid
+    """
+    permission_classes = (IsOwnerOrReadOnly, )
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    lookup_field = 'uuid'
+
 
 class QuestionListCreateAPIView(ListCreateAPIView):
     """
