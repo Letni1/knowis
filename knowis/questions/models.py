@@ -68,6 +68,11 @@ class Question(models.Model):
 class Tag(models.Model):
     tag = models.CharField(max_length=64)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid_lib.uuid4,
+        editable=False
+    )
 
     class Meta:
         db_table = '"question_tags"'
@@ -125,6 +130,11 @@ class QuestionComment(models.Model):
 class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.ForeignKey(QuestionComment, on_delete=models.CASCADE)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid_lib.uuid4,
+        editable=False
+    )
 
     class Meta:
         db_table = '"question_upvotes"'
