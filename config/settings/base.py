@@ -308,5 +308,5 @@ REST_USE_JWT = True
 # JWT_AUTH
 # ------------------------------------------------------------------------------
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': False,
+    'JWT_VERIFY_EXPIRATION': False,
 }
