@@ -57,6 +57,16 @@ class QuestionListAPIViewBySlug(ListAPIView):
             raise NotFound()
 
 
+class UserQuestionGetUpdateDeleteBySlug(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by slug
+    """
+    permission_classes = (IsOwnerOrReadOnly, )
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+    lookup_field = 'slug'
+
+
 class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update, Destroy questions by uuid
@@ -123,15 +133,15 @@ class TagListCreateApiView(ListCreateAPIView):
 
 class TagQuestionListByTagListApiView(ListAPIView):
     """
-        List the Published questions by slug from url, paginated
-        """
+        List the Published questions by tag from url, paginated
+    """
     pagination_class = PageNumberPagination
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
         """
         This view should return a list of all the Published questions for
-        the slug as determined by the slug portion of the URL.
+        the tag as determined by the tag portion of the URL.
         """
         tag = self.kwargs['tag']
         queryset = Question.objects.filter(
