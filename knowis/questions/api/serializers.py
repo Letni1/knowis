@@ -30,10 +30,11 @@ class TagSerializer(serializers.ModelSerializer):
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
     reply = serializers.SerializerMethodField()
+    question = serializers.CharField(write_only=True)
 
     class Meta:
         model = QuestionComment
-        fields = ['question', 'replied_to', 'date', 'user', 'upvotes',
+        fields = ['replied_to', 'date', 'user', 'upvotes',
                   'uuid', 'reply', 'comment', 'question_uuid']
 
     @staticmethod

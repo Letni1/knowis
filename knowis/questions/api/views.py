@@ -115,6 +115,7 @@ class CommentListCreateApiView(ListCreateAPIView):
 
 
 class CommentListApiViewByUUID(ListAPIView):
+    pagination_class = PageNumberPagination
     serializer_class = QuestionCommentSerializer
     lookup_field = 'uuid'
 
