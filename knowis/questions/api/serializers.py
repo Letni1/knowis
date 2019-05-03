@@ -34,7 +34,7 @@ class QuestionCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionComment
-        fields = ['replied_to', 'date', 'user', 'upvotes',
+        fields = ['question', 'replied_to', 'date', 'user', 'upvotes',
                   'uuid', 'reply', 'comment', 'question_uuid']
 
     @staticmethod
