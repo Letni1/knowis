@@ -30,7 +30,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
     reply = serializers.SerializerMethodField()
-    question_uuid = serializers.CharField()
+    question_uuid = serializers.SerializerMethodField('')
 
     class Meta:
         model = QuestionComment

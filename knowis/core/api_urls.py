@@ -27,7 +27,7 @@ urlpatterns = [
     re_path(r'^comments/$',
             view=q_views.CommentListCreateApiView.as_view(),
             name='questions_delete'),
-    re_path(r'^comments/q/(?P<uuid>[-\w]+)/$$',
+    re_path(r'^comments/q/(?P<uuid>[-\w]+)/$',
             view=q_views.CommentListApiViewByUUID.as_view(),
             name='questions_delete'),
     re_path(r'^Tags/(?P<tag>.+)/$',
