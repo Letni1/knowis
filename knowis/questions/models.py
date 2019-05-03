@@ -52,12 +52,6 @@ class Question(models.Model):
             self.slug = slugify(slug_str)
         super(Question, self).save(*args, **kwargs)
 
-    def get_comments(self):
-        """Returns comments sorted by upvotes and then by date"""
-        comments = QuestionComment.objects.filter(question=self)
-        comments = [comment.uuid for comment in comments]
-        return comments
-
     def get_tags(self):
         return Tag.objects.filter(question=self)
 
@@ -68,6 +62,11 @@ class Question(models.Model):
 class Tag(models.Model):
     tag = models.CharField(max_length=64)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid_lib.uuid4,
+        editable=False
+    )
 
     class Meta:
         db_table = '"question_tags"'
@@ -111,7 +110,7 @@ class QuestionComment(models.Model):
         db_table = '"question_answers"'
         verbose_name = _("Question Comment")
         verbose_name_plural = _("Question Comments")
-        ordering = ("date",)
+        ordering = ("date", "upvotes")
 
     @property
     def question_title(self):
@@ -125,6 +124,11 @@ class QuestionComment(models.Model):
 class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.ForeignKey(QuestionComment, on_delete=models.CASCADE)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid_lib.uuid4,
+        editable=False
+    )
 
     class Meta:
         db_table = '"question_upvotes"'

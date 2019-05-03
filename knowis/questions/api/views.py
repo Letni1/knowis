@@ -101,7 +101,7 @@ class QuestionListCreateAPIView(ListCreateAPIView):
 
 class CommentListCreateApiView(ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = QuestionComment.objects.filter(question__status='P')
+    queryset = QuestionComment.objects.all()
     serializer_class = QuestionCommentSerializer
     lookup_field = 'uuid'
 
@@ -112,6 +112,21 @@ class CommentListCreateApiView(ListCreateAPIView):
         serializer.validated_data['user'] = self.request.user
         return super(CommentListCreateApiView,
                      self).perform_create(serializer)
+
+
+class CommentListApiViewByUUID(ListAPIView):
+    serializer_class = QuestionCommentSerializer
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        uuid = self.kwargs['uuid']
+        queryset = QuestionComment.objects.filter(
+            question__uuid=uuid
+        )
+        if queryset:
+            return queryset
+        else:
+            raise NotFound()
 
 
 class UserCommentGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
