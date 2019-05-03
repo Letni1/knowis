@@ -52,12 +52,6 @@ class Question(models.Model):
             self.slug = slugify(slug_str)
         super(Question, self).save(*args, **kwargs)
 
-    def get_comments(self):
-        """Returns comments sorted by upvotes and then by date"""
-        comments = QuestionComment.objects.filter(question=self)
-        comments = [comment.uuid for comment in comments]
-        return comments
-
     def get_tags(self):
         return Tag.objects.filter(question=self)
 
@@ -116,7 +110,7 @@ class QuestionComment(models.Model):
         db_table = '"question_answers"'
         verbose_name = _("Question Comment")
         verbose_name_plural = _("Question Comments")
-        ordering = ("date",)
+        ordering = ("date", "upvotes")
 
     @property
     def question_title(self):
