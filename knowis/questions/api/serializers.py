@@ -15,9 +15,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['title', 'image', 'slug', 'content', 'status',
-                  'create_user', 'create_date', 'update_date', 'uuid',
-                  'username', 'get_tags', 'get_num_comments', 'get_comments']
+        fields = '__all__'
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -25,7 +23,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['tag', 'question', 'uuid', 'get_popular_tags']
+        fields = '__all__'
 
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
@@ -33,8 +31,7 @@ class QuestionCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionComment
-        fields = ['question', 'replied_to', 'date', 'user', 'upvotes',
-                  'uuid', 'reply', 'comment', 'question_uuid']
+        fields = '__all__'
 
     @staticmethod
     def get_reply(obj):
