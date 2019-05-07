@@ -110,7 +110,7 @@ class QuestionComment(models.Model):
         db_table = '"question_answers"'
         verbose_name = _("Question Comment")
         verbose_name_plural = _("Question Comments")
-        ordering = ("date", "upvotes")
+        ordering = ("upvotes", "date")
 
     @property
     def question_title(self):
@@ -119,6 +119,10 @@ class QuestionComment(models.Model):
     @property
     def question_uuid(self):
         return self.question.uuid
+
+    @property
+    def username(self):
+        return self.user.username
 
 
 class UserUpvote(models.Model):
@@ -132,4 +136,3 @@ class UserUpvote(models.Model):
 
     class Meta:
         db_table = '"question_upvotes"'
-
