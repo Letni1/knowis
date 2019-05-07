@@ -28,7 +28,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 class QuestionCommentSerializer(serializers.ModelSerializer):
     reply = serializers.SerializerMethodField()
-    username = serializers.ReadOnlyField()
 
     class Meta:
         model = QuestionComment
