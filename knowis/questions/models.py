@@ -125,7 +125,6 @@ class QuestionComment(models.Model):
         return self.user.username
 
 
-
 class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.ForeignKey(QuestionComment, on_delete=models.CASCADE)

@@ -1,3 +1,4 @@
+from django.http import Http404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
@@ -6,7 +7,9 @@ from rest_framework.generics import (ListCreateAPIView,
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
-
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
 from ..models import Question, QuestionComment, Tag
 from .serializers import (QuestionSerializer, QuestionCommentSerializer,
                           TagSerializer)
@@ -112,6 +115,39 @@ class CommentListCreateApiView(ListCreateAPIView):
         serializer.validated_data['user'] = self.request.user
         return super(CommentListCreateApiView,
                      self).perform_create(serializer)
+
+
+class CommentCreateAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get_object(self, uuid):
+        try:
+            return Question.objects.get(uuid=uuid)
+        except Question.DoesNotExist:
+            raise Http404
+
+    def get(self, request, uuid, format=None):
+        questions = self.get_object(uuid)
+        serializer = QuestionSerializer(questions)
+        print(serializer.data['id'])
+        return Response({
+            "id": serializer.data['id']
+        })
+
+    def post(self, request, uuid, format=None):
+        questions = self.get_object(uuid)
+        question_serializer = QuestionSerializer(questions)
+        serializer = QuestionCommentSerializer(data={
+            "question": question_serializer.data['id'],
+            "user": request.user.id,
+            "comment": request.GET.get('comment', '')
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class CommentListApiViewByUUID(ListAPIView):

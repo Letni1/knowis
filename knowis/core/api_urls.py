@@ -43,5 +43,8 @@ urlpatterns = [
             name='user_list'),
     re_path(r'^profile/d/(?P<uuid>[-\w]+)/$',
             view=u_views.UseraccountGetUpdateDeleteByUUID.as_view(),
-            name='user_ud')
+            name='user_uuid'),
+    re_path(r'^question/u/(?P<uuid>[-\w]+)/$',
+            view=q_views.CommentCreateAPIView.as_view(),
+            name='questions_by_slug'),
 ]

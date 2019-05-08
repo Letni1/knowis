@@ -31,6 +31,14 @@ class Useraccount(models.Model):
     def username(self):
         return self.user.username
 
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
 
 @receiver(post_save, sender=User)
 def create_useraccount(sender, instance, created, **kwargs):
