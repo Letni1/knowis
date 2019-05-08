@@ -2,7 +2,6 @@ from django.urls import re_path
 from ..questions.api import views as q_views
 from ..useraccount.api import views as u_views
 
-
 app_name = 'api'
 
 urlpatterns = [

@@ -1,7 +1,7 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListAPIView,
-                                     ListCreateAPIView,
+                                     RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
 from rest_framework.permissions import IsAuthenticated
 from ...core.permissions import IsUserOrReadOnly
@@ -17,6 +17,7 @@ class UseraccountListAPIView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         queryset = Useraccount.objects.filter(user=user)
+        print(user)
         if queryset:
             return queryset
         else:
