@@ -117,7 +117,7 @@ class CommentListCreateApiView(ListCreateAPIView):
                      self).perform_create(serializer)
 
 
-class CommentCreateAPIView(APIView):
+class CommentCreateAPIViewByQuestionUUID(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get_object(self, uuid):
@@ -125,14 +125,6 @@ class CommentCreateAPIView(APIView):
             return Question.objects.get(uuid=uuid)
         except Question.DoesNotExist:
             raise Http404
-
-    def get(self, request, uuid, format=None):
-        questions = self.get_object(uuid)
-        serializer = QuestionSerializer(questions)
-        print(serializer.data['id'])
-        return Response({
-            "id": serializer.data['id']
-        })
 
     def post(self, request, uuid, format=None):
         questions = self.get_object(uuid)
@@ -146,8 +138,6 @@ class CommentCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class CommentListApiViewByUUID(ListAPIView):
