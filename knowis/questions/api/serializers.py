@@ -2,15 +2,15 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.fields import empty
 
-from ...questions.models import Question, QuestionComment, Tag
+from ...questions.models import Question, QuestionAnswer, Tag
 
 
 class QuestionSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     get_tags = serializers.ListField(child=serializers.CharField(),
                                      read_only=True)
-    get_num_comments = serializers.ReadOnlyField()
-    get_comments = serializers.ListField(child=serializers.CharField(),
+    get_num_answers = serializers.ReadOnlyField()
+    get_answers = serializers.ListField(child=serializers.CharField(),
                                          read_only=True)
 
     class Meta:
@@ -26,18 +26,19 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class QuestionCommentSerializer(serializers.ModelSerializer):
-    reply = serializers.SerializerMethodField()
+class QuestionAnswerSerializer(serializers.ModelSerializer):
+    # reply = serializers.SerializerMethodField()
     username = serializers.ReadOnlyField()
+    question_uuid = serializers.ReadOnlyField()
 
     class Meta:
-        model = QuestionComment
+        model = QuestionAnswer
         fields = '__all__'
 
-    @staticmethod
-    def get_reply(obj):
-        return [QuestionCommentSerializer().to_representation(cat)
-                for cat in obj.reply.all()]
+    # @staticmethod
+    # def get_reply(obj):
+    #     return [QuestionAnswerSerializer().to_representation(cat)
+    #             for cat in obj.reply.all()]
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)

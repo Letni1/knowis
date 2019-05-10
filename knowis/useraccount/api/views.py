@@ -33,3 +33,5 @@ class UseraccountGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     queryset = Useraccount.objects.all()
     serializer_class = UseraccountSerializer
     lookup_field = 'uuid'
+
+

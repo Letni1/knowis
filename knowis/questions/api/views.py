@@ -10,8 +10,8 @@ from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from ..models import Question, QuestionComment, Tag
-from .serializers import (QuestionSerializer, QuestionCommentSerializer,
+from ..models import Question, QuestionAnswer, Tag
+from .serializers import (QuestionSerializer, QuestionAnswerSerializer,
                           TagSerializer)
 from ...core.permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
@@ -102,22 +102,7 @@ class QuestionListCreateAPIView(ListCreateAPIView):
                      self).perform_create(serializer)
 
 
-class CommentListCreateApiView(ListCreateAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = QuestionComment.objects.all()
-    serializer_class = QuestionCommentSerializer
-    lookup_field = 'uuid'
-
-    def perform_create(self, serializer):
-        """
-        Overwrite create_user field by user logged in.
-        """
-        serializer.validated_data['user'] = self.request.user
-        return super(CommentListCreateApiView,
-                     self).perform_create(serializer)
-
-
-class CommentCreateAPIViewByQuestionUUID(APIView):
+class AnswerCreateAPIViewByQuestionUUID(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get_object(self, uuid):
@@ -129,10 +114,10 @@ class CommentCreateAPIViewByQuestionUUID(APIView):
     def post(self, request, uuid, format=None):
         questions = self.get_object(uuid)
         question_serializer = QuestionSerializer(questions)
-        serializer = QuestionCommentSerializer(data={
+        serializer = QuestionAnswerSerializer(data={
             "question": question_serializer.data['id'],
             "user": request.user.id,
-            "comment": request.GET.get('comment', '')
+            "answer": request.GET.get('answer', '')
         })
         if serializer.is_valid():
             serializer.save()
@@ -140,30 +125,20 @@ class CommentCreateAPIViewByQuestionUUID(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CommentListApiViewByUUID(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    pagination_class = PageNumberPagination
-    serializer_class = QuestionCommentSerializer
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        uuid = self.kwargs['uuid']
-        queryset = QuestionComment.objects.filter(
-            question__uuid=uuid
-        )
-        if queryset:
-            return queryset
-        else:
-            raise NotFound()
-
-
-class UserCommentGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+class AnswerGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update, Destroy questions by uuid
     """
     permission_classes = (IsUserOrReadOnly, )
-    queryset = QuestionComment.objects.all()
-    serializer_class = QuestionCommentSerializer
+    queryset = QuestionAnswer.objects.all()
+    serializer_class = QuestionAnswerSerializer
+    lookup_field = 'uuid'
+
+
+class AnswerListCreateApiView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = QuestionAnswer.objects.all()
+    serializer_class = QuestionAnswerSerializer
     lookup_field = 'uuid'
 
 
