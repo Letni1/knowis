@@ -142,6 +142,23 @@ class AnswerListCreateApiView(ListCreateAPIView):
     lookup_field = 'uuid'
 
 
+class AnswersListApiViewByQuestionUUID(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    pagination_class = PageNumberPagination
+    serializer_class = QuestionAnswerSerializer
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        uuid = self.kwargs['uuid']
+        queryset = QuestionAnswer.objects.filter(
+            question__uuid=uuid
+        )
+        if queryset:
+            return queryset
+        else:
+            raise NotFound()
+
+
 class TagListCreateApiView(ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Tag.objects.all()
