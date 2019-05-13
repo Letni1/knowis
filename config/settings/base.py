@@ -311,4 +311,3 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
 }
 
-APPEND_SLASH=False
