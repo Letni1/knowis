@@ -339,5 +339,5 @@ MailHog
 knowis/media/
 
 .pytest_cache/
-.envs
-.idea
+.envs/
+.idea/
