@@ -55,7 +55,7 @@ class Question(models.Model):
     def get_tags(self):
         return Tag.objects.filter(question=self)
 
-    def get_num_comments(self):
+    def get_num_answers(self):
         return len(QuestionAnswer.objects.filter(question=self))
 
 
