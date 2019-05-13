@@ -1,3 +1,4 @@
+from django.http import Http404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
@@ -6,9 +7,11 @@ from rest_framework.generics import (ListCreateAPIView,
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
-
-from ..models import Question, QuestionComment, Tag
-from .serializers import (QuestionSerializer, QuestionCommentSerializer,
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
+from ..models import Question, QuestionAnswer, Tag
+from .serializers import (QuestionSerializer, QuestionAnswerSerializer,
                           TagSerializer)
 from ...core.permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
@@ -57,6 +60,16 @@ class QuestionListAPIViewBySlug(ListAPIView):
             raise NotFound()
 
 
+class UserQuestionGetUpdateDeleteBySlug(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by slug
+    """
+    permission_classes = (IsOwnerOrReadOnly, )
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+    lookup_field = 'slug'
+
+
 class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update, Destroy questions by uuid
@@ -89,44 +102,61 @@ class QuestionListCreateAPIView(ListCreateAPIView):
                      self).perform_create(serializer)
 
 
-class CommentListCreateApiView(ListCreateAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = QuestionComment.objects.all()
-    serializer_class = QuestionCommentSerializer
+class AnswerCreateAPIViewByQuestionUUID(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get_object(self, uuid):
+        try:
+            return Question.objects.get(uuid=uuid)
+        except Question.DoesNotExist:
+            raise Http404
+
+    def post(self, request, uuid, format=None):
+        questions = self.get_object(uuid)
+        question_serializer = QuestionSerializer(questions)
+        serializer = QuestionAnswerSerializer(data={
+            "question": question_serializer.data['id'],
+            "user": request.user.id,
+            "answer": request.GET.get('answer', '')
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AnswerGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update, Destroy questions by uuid
+    """
+    permission_classes = (IsUserOrReadOnly, )
+    queryset = QuestionAnswer.objects.all()
+    serializer_class = QuestionAnswerSerializer
     lookup_field = 'uuid'
 
-    def perform_create(self, serializer):
-        """
-        Overwrite create_user field by user logged in.
-        """
-        serializer.validated_data['user'] = self.request.user
-        return super(CommentListCreateApiView,
-                     self).perform_create(serializer)
+
+class AnswerListCreateApiView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = QuestionAnswer.objects.all()
+    serializer_class = QuestionAnswerSerializer
+    lookup_field = 'uuid'
 
 
-class CommentListApiViewByUUID(ListAPIView):
-    serializer_class = QuestionCommentSerializer
+class AnswersListApiViewByQuestionUUID(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    pagination_class = PageNumberPagination
+    serializer_class = QuestionAnswerSerializer
     lookup_field = 'uuid'
 
     def get_queryset(self):
         uuid = self.kwargs['uuid']
-        queryset = QuestionComment.objects.filter(
+        queryset = QuestionAnswer.objects.filter(
             question__uuid=uuid
         )
         if queryset:
             return queryset
         else:
             raise NotFound()
-
-
-class UserCommentGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, Update, Destroy questions by uuid
-    """
-    permission_classes = (IsUserOrReadOnly, )
-    queryset = QuestionComment.objects.all()
-    serializer_class = QuestionCommentSerializer
-    lookup_field = 'uuid'
 
 
 class TagListCreateApiView(ListCreateAPIView):
@@ -138,15 +168,15 @@ class TagListCreateApiView(ListCreateAPIView):
 
 class TagQuestionListByTagListApiView(ListAPIView):
     """
-        List the Published questions by slug from url, paginated
-        """
+        List the Published questions by tag from url, paginated
+    """
     pagination_class = PageNumberPagination
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
         """
         This view should return a list of all the Published questions for
-        the slug as determined by the slug portion of the URL.
+        the tag as determined by the tag portion of the URL.
         """
         tag = self.kwargs['tag']
         queryset = Question.objects.filter(

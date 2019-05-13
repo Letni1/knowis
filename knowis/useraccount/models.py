@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 import uuid as uuid_lib
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
@@ -8,11 +10,11 @@ from imagekit.processors import ResizeToFill
 
 class Useraccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars', default='default.jpeg')
+    avatar = models.ImageField(upload_to='avatars', default='default.jpg')
     avatar_thumbnail = ImageSpecField(source='avatar',
                                       processors=[ResizeToFill(200, 200)],
                                       format='JPEG',
-                                      options={'quality': 90})
+                                      options={'quality': 100})
     description = models.TextField(max_length=500, null=True, blank=True)
     uuid = models.UUIDField(
         db_index=True,
@@ -28,3 +30,18 @@ class Useraccount(models.Model):
     @property
     def username(self):
         return self.user.username
+
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
+
+@receiver(post_save, sender=User)
+def create_useraccount(sender, instance, created, **kwargs):
+    if created:
+        Useraccount.objects.create(user=instance)
+

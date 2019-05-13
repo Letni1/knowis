@@ -55,8 +55,8 @@ class Question(models.Model):
     def get_tags(self):
         return Tag.objects.filter(question=self)
 
-    def get_num_comments(self):
-        return len(QuestionComment.objects.filter(question=self))
+    def get_num_answers(self):
+        return len(QuestionAnswer.objects.filter(question=self))
 
 
 class Tag(models.Model):
@@ -92,11 +92,11 @@ class Tag(models.Model):
         return sorted_count[:20]
 
 
-class QuestionComment(models.Model):
+class QuestionAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=500)
-    replied_to = models.ForeignKey("self", related_name='reply',
-                                   on_delete=models.CASCADE, null=True)
+    answer = models.CharField(max_length=500)
+    # replied_to = models.ForeignKey("self", related_name='reply',
+    #                                on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     upvotes = models.IntegerField(default=0)
@@ -108,9 +108,9 @@ class QuestionComment(models.Model):
 
     class Meta:
         db_table = '"question_answers"'
-        verbose_name = _("Question Comment")
-        verbose_name_plural = _("Question Comments")
-        ordering = ("date", "upvotes")
+        verbose_name = _("Question Answer")
+        verbose_name_plural = _("Question Answers")
+        ordering = ("upvotes", "date")
 
     @property
     def question_title(self):
@@ -120,10 +120,14 @@ class QuestionComment(models.Model):
     def question_uuid(self):
         return self.question.uuid
 
+    @property
+    def username(self):
+        return self.user.username
+
 
 class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.ForeignKey(QuestionComment, on_delete=models.CASCADE)
+    answer = models.ForeignKey(QuestionAnswer, on_delete=models.CASCADE)
     uuid = models.UUIDField(
         db_index=True,
         default=uuid_lib.uuid4,
@@ -132,4 +136,3 @@ class UserUpvote(models.Model):
 
     class Meta:
         db_table = '"question_upvotes"'
-

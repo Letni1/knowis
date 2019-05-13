@@ -2,22 +2,20 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.fields import empty
 
-from ...questions.models import Question, QuestionComment, Tag
+from ...questions.models import Question, QuestionAnswer, Tag
 
 
 class QuestionSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     get_tags = serializers.ListField(child=serializers.CharField(),
                                      read_only=True)
-    get_num_comments = serializers.ReadOnlyField()
-    get_comments = serializers.ListField(child=serializers.CharField(),
+    get_num_answers = serializers.ReadOnlyField()
+    get_answers = serializers.ListField(child=serializers.CharField(),
                                          read_only=True)
 
     class Meta:
         model = Question
-        fields = ['title', 'image', 'slug', 'content', 'status',
-                  'create_user', 'create_date', 'update_date', 'uuid',
-                  'username', 'get_tags', 'get_num_comments', 'get_comments']
+        fields = '__all__'
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -25,19 +23,26 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['tag', 'question', 'uuid', 'get_popular_tags']
+        fields = '__all__'
 
 
-class QuestionCommentSerializer(serializers.ModelSerializer):
-    reply = serializers.SerializerMethodField()
-    question_uuid = serializers.SerializerMethodField('')
+class QuestionAnswerSerializer(serializers.ModelSerializer):
+    # reply = serializers.SerializerMethodField()
+    username = serializers.ReadOnlyField()
+    question_uuid = serializers.ReadOnlyField()
 
     class Meta:
-        model = QuestionComment
-        fields = ['question', 'replied_to', 'date', 'user', 'upvotes',
-                  'uuid', 'reply', 'comment', 'question_uuid']
+        model = QuestionAnswer
+        fields = '__all__'
 
-    @staticmethod
-    def get_reply(obj):
-        return [QuestionCommentSerializer().to_representation(cat)
-                for cat in obj.reply.all()]
+    # @staticmethod
+    # def get_reply(obj):
+    #     return [QuestionAnswerSerializer().to_representation(cat)
+    #             for cat in obj.reply.all()]
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        request = self.context.get('request')
+        if request is not None and not request.parser_context.get('kwargs'):
+            fields.pop('id', None)
+        return fields

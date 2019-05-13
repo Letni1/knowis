@@ -2,7 +2,6 @@ from django.urls import re_path
 from ..questions.api import views as q_views
 from ..useraccount.api import views as u_views
 
-
 app_name = 'api'
 
 urlpatterns = [
@@ -10,9 +9,12 @@ urlpatterns = [
             view=q_views.QuestionListAPIViewByUser.as_view(),
             name='questions_by_user'
             ),
-    re_path(r'^questions/d/(?P<uuid>[-\w]+)/$',
-            view=q_views.UserQuestionGetUpdateDeleteByUUID.as_view(),
-            name='questions_delete'),
+    re_path(r'^questions/d/(?P<slug>.+)/$',
+            view=q_views.UserQuestionGetUpdateDeleteBySlug.as_view(),
+            name='questions_by_slug'),
+    # re_path(r'^questions/d/(?P<uuid>[-\w]+)/$',
+    #         view=q_views.UserQuestionGetUpdateDeleteByUUID.as_view(),
+    #         name='questions_delete'),
     re_path(r'^questions/(?P<slug>.+)/$',
             view=q_views.QuestionListAPIViewBySlug.as_view(),
             name='questions_by_slug'
@@ -21,19 +23,19 @@ urlpatterns = [
             name='questions_rest_api'),
     # re_path(r'^questions/$', view=views.QuestionListAPIViewByMult.as_view(),
     #         name='questions_filter_api'),
-    re_path(r'^comments/d/(?P<uuid>[-\w]+)/$',
-            view=q_views.UserCommentGetUpdateDeleteByUUID.as_view(),
+    re_path(r'^answers/d/(?P<uuid>[-\w]+)/$',
+            view=q_views.AnswerGetUpdateDeleteByUUID.as_view(),
             name='questions_delete'),
-    re_path(r'^comments/$',
-            view=q_views.CommentListCreateApiView.as_view(),
+    re_path(r'^answers/q/(?P<uuid>[-\w]+)/$',
+            view=q_views.AnswersListApiViewByQuestionUUID.as_view(),
+            name='comment_by_question_uuid'),
+    re_path(r'^answers/$',
+            view=q_views.AnswerListCreateApiView.as_view(),
             name='questions_delete'),
-    re_path(r'^comments/q/(?P<uuid>[-\w]+)/$',
-            view=q_views.CommentListApiViewByUUID.as_view(),
-            name='questions_delete'),
-    re_path(r'^Tags/(?P<tag>.+)/$',
+    re_path(r'^tags/(?P<tag>.+)/$',
             view=q_views.TagQuestionListByTagListApiView.as_view(),
             name='questions_by_tag'),
-    re_path(r'^Tags/$',
+    re_path(r'^tags/$',
             view=q_views.TagListCreateApiView.as_view(),
             name='tags'),
     re_path(r'^profile/$',
@@ -41,5 +43,6 @@ urlpatterns = [
             name='user_list'),
     re_path(r'^profile/d/(?P<uuid>[-\w]+)/$',
             view=u_views.UseraccountGetUpdateDeleteByUUID.as_view(),
-            name='user_ud')
-]
+            name='user_uuid'),
+    ]
+
