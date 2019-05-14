@@ -338,6 +338,6 @@ pip-selfcheck.json
 MailHog
 knowis/media/
 
-.pytest_cache/
-.envs/
-.idea/
+.pytest_cache
+.envs
+.idea
