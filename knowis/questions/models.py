@@ -1,6 +1,7 @@
 import markdown
 import logging
 from unidecode import unidecode
+import json
 import uuid as uuid_lib
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -20,7 +21,8 @@ class Question(models.Model):
     )
 
     title = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True, max_length=255)
+    image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True,
+                              max_length=255)
     slug = models.SlugField(max_length=255, null=True, blank=True)
     content = models.TextField(max_length=5000, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
@@ -49,7 +51,11 @@ class Question(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            slug_str = "{}".format(self.title.lower())
+            try:
+                editor_title = json.loads(self.title)
+                slug_str = ''.join(i['text'] for i in editor_title['blocks'])
+            except json.decoder.JSONDecodeError:
+                slug_str = ''.join(self.title.lower())
             self.slug = uuslug(slug_str, instance=self)
         super(Question, self).save(*args, **kwargs)
 
