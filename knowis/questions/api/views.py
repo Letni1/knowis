@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import (ListCreateAPIView,
                                      RetrieveUpdateDestroyAPIView,
-                                     ListAPIView)
+                                     ListAPIView, CreateAPIView)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
@@ -80,26 +80,34 @@ class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     lookup_field = 'uuid'
 
 
-class QuestionListCreateAPIView(ListCreateAPIView):
+class QuestionListAPIView(ListAPIView):
     """
     Returns the list of questions with pagination and filtering by tags/user
 
     """
     permission_classes = (IsAuthenticated, )
     pagination_class = PageNumberPagination
-    queryset = Question.objects.filter(status='P')
+    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ('create_user', )
 
-    def perform_create(self, serializer):
-        """
-        Overwrite create_user field by user logged in.
-        """
-        serializer.validated_data['create_user'] = self.request.user
-        return super(QuestionListCreateAPIView,
-                     self).perform_create(serializer)
+
+class QuestionPostAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request):
+        questions = Question.objects.all()
+        serializer = QuestionSerializer(data={
+            "title": request.GET.get('title', ''),
+            "content": request.GET.get('content', ''),
+            "create_user": request.user.id
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnswerCreateAPIViewByQuestionUUID(APIView):

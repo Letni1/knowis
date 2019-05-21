@@ -1,11 +1,12 @@
 import markdown
 import logging
+from unidecode import unidecode
 import uuid as uuid_lib
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.template.defaultfilters import slugify
+from uuslug import uuslug
 from django.forms.models import model_to_dict
 
 
@@ -49,7 +50,7 @@ class Question(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             slug_str = "{}".format(self.title.lower())
-            self.slug = slugify(slug_str)
+            self.slug = uuslug(slug_str, instance=self)
         super(Question, self).save(*args, **kwargs)
 
     def get_tags(self):

@@ -19,8 +19,12 @@ urlpatterns = [
             view=q_views.QuestionListAPIViewBySlug.as_view(),
             name='get_question_by_slug'
             ),
-    re_path(r'^questions/$', view=q_views.QuestionListCreateAPIView.as_view(),
-            name='list_create_questions'),
+    re_path(r'^question/$',
+            view=q_views.QuestionPostAPIView.as_view(),
+            name='create_question'
+            ),
+    re_path(r'^questions/$', view=q_views.QuestionListAPIView.as_view(),
+            name='list_published_questions'),
     # re_path(r'^questions/$', view=views.QuestionListAPIViewByMult.as_view(),
     #         name='questions_filter_api'),
     re_path(r'^answers/d/(?P<uuid>[-\w]+)/$',

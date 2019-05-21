@@ -294,7 +294,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'http://localhost:8080',
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
     'localhost:3000',

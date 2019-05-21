@@ -49,6 +49,8 @@ django-contrib-comments = "*"
 django-heroku = "*"
 django-imagekit = "*"
 Markdown = "*"
+unidecode = "*"
+django-uuslug = "*"
 
 [requires]
 python_version = "3.6"

@@ -11,7 +11,7 @@ class QuestionSerializer(serializers.ModelSerializer):
                                      read_only=True)
     get_num_answers = serializers.ReadOnlyField()
     get_answers = serializers.ListField(child=serializers.CharField(),
-                                         read_only=True)
+                                        read_only=True)
 
     class Meta:
         model = Question
