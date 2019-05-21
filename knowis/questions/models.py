@@ -20,7 +20,7 @@ class Question(models.Model):
         (PUBLISHED, 'Published'),
     )
 
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=500)
     image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True,
                               max_length=255)
     slug = models.SlugField(max_length=255, null=True, blank=True)
