@@ -24,7 +24,7 @@ class Question(models.Model):
     image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True,
                               max_length=255)
     slug = models.SlugField(max_length=255, null=True, blank=True)
-    content = models.TextField(max_length=5000, null=True, blank=True)
+    content = models.TextField(max_length=1500, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
     create_user = models.ForeignKey(User, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -101,7 +101,7 @@ class Tag(models.Model):
 
 class QuestionAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=500, blank=False)
+    answer = models.CharField(max_length=5000, blank=False)
     # replied_to = models.ForeignKey("self", related_name='reply',
     #                                on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
