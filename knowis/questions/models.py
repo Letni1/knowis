@@ -101,7 +101,7 @@ class Tag(models.Model):
 
 class QuestionAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=500)
+    answer = models.CharField(max_length=500, blank=False)
     # replied_to = models.ForeignKey("self", related_name='reply',
     #                                on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)

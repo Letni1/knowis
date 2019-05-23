@@ -311,6 +311,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'knowis.useraccount.api.serializers.ProfileRegisterSerializer',
+    'LOGIN_SERIALIZER': 'knowis.useraccount.api.serializers.CustomMesasgesLoginSerializer'
+}
 REST_USE_JWT = True
 # JWT_AUTH
 # ------------------------------------------------------------------------------
