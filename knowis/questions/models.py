@@ -6,9 +6,22 @@ import uuid as uuid_lib
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from datetime import datetime
 from uuslug import uuslug
-from django.forms.models import model_to_dict
+
+
+def validate_not_blank(field):
+    try:
+        text = json.loads(field)
+        text_len = len(''.join(i['text'] for i in text['blocks']))
+        if text_len <= 0:
+            raise ValidationError(
+                _('%(field) не може бути пустим'),
+                params={'field': field},
+            )
+    except json.decoder.JSONDecodeError:
+        pass
 
 
 class Question(models.Model):
@@ -20,7 +33,8 @@ class Question(models.Model):
         (PUBLISHED, 'Published'),
     )
 
-    title = models.CharField(max_length=500)
+    title = models.CharField(max_length=500,
+                             validators=[validate_not_blank])
     image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True,
                               max_length=255)
     slug = models.SlugField(max_length=255, null=True, blank=True)
