@@ -35,3 +35,8 @@ class UseraccountGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     lookup_field = 'uuid'
 
 
+class UseraccountRetrieveBySlug(RetrieveAPIView):
+    permission_classes = (IsUser, IsAuthenticated)
+    queryset = Useraccount.objects.all()
+    serializer_class = UseraccountSerializer
+    lookup_field = 'slug'
