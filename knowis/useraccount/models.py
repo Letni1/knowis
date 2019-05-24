@@ -6,6 +6,7 @@ from django.dispatch import receiver
 import uuid as uuid_lib
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from uuslug import uuslug
 
 
 class Useraccount(models.Model):
@@ -16,6 +17,7 @@ class Useraccount(models.Model):
                                       format='JPEG',
                                       options={'quality': 100})
     description = models.TextField(max_length=500, null=True, blank=True)
+    slug = models.SlugField(max_length=255, null=True, blank=True)
     uuid = models.UUIDField(
         db_index=True,
         default=uuid_lib.uuid4,
@@ -38,6 +40,13 @@ class Useraccount(models.Model):
     @property
     def last_name(self):
         return self.user.last_name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug_str = "{} {}".format(self.user.first_name, self.user.last_name)
+            get_slugify = uuslug(slug_str, instance=self)
+            self.slug = '-'.join(name.capitalize() for name in get_slugify.split('-'))
+        super(Useraccount, self).save(*args, **kwargs)
 
 
 @receiver(post_save, sender=User)

@@ -115,7 +115,7 @@ class Tag(models.Model):
 
 class QuestionAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=5000, blank=False)
+    answer = models.CharField(max_length=5000, blank=False, validators=[validate_not_blank])
     # replied_to = models.ForeignKey("self", related_name='reply',
     #                                on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
@@ -144,6 +144,11 @@ class QuestionAnswer(models.Model):
     @property
     def username(self):
         return self.user.username
+
+    def get_upvoters(self):
+        upvotes = UserUpvote.objects.filter(answer=self)
+        upvote_users = [upvote.user.uuid for upvote in upvotes]
+        return upvote_users
 
 
 class UserUpvote(models.Model):
