@@ -79,6 +79,11 @@ class Question(models.Model):
     def get_num_answers(self):
         return len(QuestionAnswer.objects.filter(question=self))
 
+    def create_tags(self, tag_list):
+        for tag in tag_list:
+            if tag:
+                t, created = Tag.objects.get_or_create(tag=tag.lower(), question=self)
+
 
 class Tag(models.Model):
     tag = models.CharField(max_length=64)

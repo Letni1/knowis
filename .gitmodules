@@ -1,0 +1,3 @@
+[submodule "knowis_web"]
+	path = knowis_web
+	url = https://github.com/bakalux/knowis_web

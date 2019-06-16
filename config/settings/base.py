@@ -9,10 +9,10 @@ APPS_DIR = ROOT_DIR.path('knowis')
 
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
-if READ_DOT_ENV_FILE:
-    # OS environment variables take precedence over variables from .env
-    env.read_env(str(ROOT_DIR.path('.env')))
+# READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
+# if READ_DOT_ENV_FILE:
+#     # OS environment variables take precedence over variables from .env
+#     env.read_env(str(ROOT_DIR.path('.env')))
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -42,6 +42,27 @@ USE_TZ = True
 #     'default': env.db('DATABASE_URL', default='postgres:///knowis'),
 # }
 # DATABASES['default']['ATOMIC_REQUESTS'] = True
+# if env('GAE_APPLICATION', None):
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': env('GAE_DB_NAME'),
+#             'USER': env('GAE_DB_USER'),
+#             'PASSWORD': env('GAE_DB_PASSWORD'),
+#             'HOST': '/cloudsql/' + env('GAE_DB_HOST'),
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'knowis',
+#             'USER': 'knowis_user',
+#             'PASSWORD': 'postgres',
+#             'HOST': '127.0.0.1',
+#             'PORT': '5432',
+#         }
+#     }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

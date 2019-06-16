@@ -98,11 +98,10 @@ class QuestionPostAPIView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def post(self, request):
-        questions = Question.objects.all()
         serializer = QuestionSerializer(data={
             "title": request.GET.get('title', ''),
             "content": request.GET.get('content', ''),
-            "create_user": request.user.id
+            "create_user": request.user.id,
         })
         if serializer.is_valid():
             serializer.save()
