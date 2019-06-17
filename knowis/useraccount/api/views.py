@@ -9,20 +9,25 @@ from rest_framework.response import Response
 from ...core.permissions import IsUserOrReadOnly, IsUser
 from ..models import Useraccount
 from .serializers import UseraccountSerializer
+from django.http import Http404
 
 
-class UseraccountListAPIView(ListAPIView):
+class UseraccountListAPIView(APIView):
 
     permission_classes = (IsAuthenticated,)
     serializer_class = UseraccountSerializer
 
-    def get_queryset(self):
+    def get_object(self, user):
+        try:
+            return Useraccount.objects.get(user=user)
+        except Useraccount.DoesNotExist:
+            raise Http404
+
+    def get(self, request, format=None):
         user = self.request.user.id
-        queryset = Useraccount.objects.filter(user=user)
-        if queryset:
-            return queryset
-        else:
-            raise NotFound()
+        current_user = self.get_object(user)
+        serializer = UseraccountSerializer(current_user)
+        return Response(serializer.data)
 
 
 class UseraccountGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
