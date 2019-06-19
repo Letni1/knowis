@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 
 import environ
 
+
 ROOT_DIR = environ.Path(__file__) - 3  # (knowis/config/settings/base.py - 3 = knowis/)
 APPS_DIR = ROOT_DIR.path('knowis')
 
@@ -102,6 +103,8 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'corsheaders',
     'imagekit',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
 ]
 LOCAL_APPS = [
     # 'knowis.users.apps.UsersAppConfig',
@@ -314,22 +317,12 @@ ACCOUNT_USERNAME_REQUIRED = False
 # ------------------------------------------------------------------------------
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'http://localhost:8080',
-)
-CORS_ORIGIN_REGEX_WHITELIST = (
-    'localhost:3000',
-)
 # REST_FRAMEWORK
 # ------------------------------------------------------------------------------
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ),
 }
 REST_AUTH_REGISTER_SERIALIZERS = {

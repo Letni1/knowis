@@ -1,9 +1,13 @@
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
+from knowis.questions.views import FacebookLogin
+
+
+
 
 urlpatterns = [
     # path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -21,7 +25,8 @@ urlpatterns = [
     # ),
     path('auth/', include('rest_auth.urls')),
     path('auth/registration/', include('rest_auth.registration.urls')),
-    path('api/', include('knowis.core.api_urls', namespace='api'))
+    path('api/', include('knowis.core.api_urls', namespace='api')),
+    re_path(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login')
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT

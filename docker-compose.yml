@@ -7,7 +7,7 @@ services:
     volumes:
       - .:/opt/services/djangoapp
     networks:
-      - caddy_network
+      - nginx_network
       - database1_network
     depends_on:
       - migration
@@ -15,15 +15,28 @@ services:
     expose:
       - 8000
 
-  caddy:
-    image: jumanjiman/caddy
+  frontend:
+    image: node:latest
+    command: sh entrypoint.sh
+    working_dir: /knowis_web
+    volumes:
+      - ./knowis_web/:/knowis_web
+    depends_on:
+      - djangoapp
+    networks:
+      - nginx_network
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./knowis_web/build:/var/www/knowis_web
     depends_on:
       - djangoapp
     ports:
-      - "80:8000"
-    command: -port 8000 -host 0.0.0.0 "proxy / djangoapp:8000 { }"
+      - 0.0.0.0:80:80
     networks:
-      - caddy_network
+      - nginx_network
 
   database1:
     image: postgres
@@ -63,7 +76,7 @@ services:
       - database1_network
 
 networks:
-  caddy_network:
+  nginx_network:
     driver: bridge
   database1_network:
     driver: bridge
