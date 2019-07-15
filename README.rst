@@ -123,15 +123,7 @@ You must set the DSN url in production.
 
 Deployment
 ----------
-
-The following details how to deploy this application.
-
-DONE SO FAR
------------
-- Auth;
-- List / Create questions;
-- Filtering by user/status;
--
+docker-compose up
 
 
 
