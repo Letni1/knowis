@@ -1,42 +1,39 @@
-import markdown
-import logging
-from unidecode import unidecode
 import json
+import logging
 import uuid as uuid_lib
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
+
+import markdown
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from datetime import datetime
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from unidecode import unidecode
 from uuslug import uuslug
 
 
-def validate_not_blank(field):
+def validate_draftjs_not_blank(field):
     try:
         text = json.loads(field)
-        text_len = len(''.join(i['text'] for i in text['blocks']))
+        text_len = len("".join(i["text"] for i in text["blocks"]))
         if text_len <= 0:
             raise ValidationError(
-                _('%(field) не може бути пустим'),
-                params={'field': field},
+                _("%(field) не може бути пустим"), params={"field": field}
             )
     except json.decoder.JSONDecodeError:
         pass
 
 
 class Question(models.Model):
-    name = 'Question'
-    DRAFT = 'D'
-    PUBLISHED = 'P'
-    STATUS = (
-        (DRAFT, 'Draft'),
-        (PUBLISHED, 'Published'),
-    )
+    name = "Question"
+    DRAFT = "D"
+    PUBLISHED = "P"
+    STATUS = ((DRAFT, "Draft"), (PUBLISHED, "Published"))
 
-    title = models.CharField(max_length=500,
-                             validators=[validate_not_blank])
-    image = models.ImageField(upload_to='images/%Y/%m/%d', blank=True,
-                              max_length=255)
+    title = models.CharField(max_length=500, validators=[validate_draftjs_not_blank])
+    image = models.ImageField(
+        upload_to="images/%Y/%m/%d", blank=True, max_length=255
+    )
     slug = models.SlugField(max_length=255, null=True, blank=True)
     content = models.TextField(max_length=1500, null=True, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
@@ -45,9 +42,7 @@ class Question(models.Model):
     update_date = models.DateTimeField(blank=True, null=True)
     # update_user = models.ForeignKey(User, null=True, blank=True, related_name='+', on_delete=models.CASCADE)
     uuid = models.UUIDField(
-        db_index=True,
-        default=uuid_lib.uuid4,
-        editable=False
+        db_index=True, default=uuid_lib.uuid4, editable=False
     )
 
     class Meta:
@@ -67,9 +62,9 @@ class Question(models.Model):
         if not self.slug:
             try:
                 editor_title = json.loads(self.title)
-                slug_str = ''.join(i['text'] for i in editor_title['blocks'])
+                slug_str = "".join(i["text"] for i in editor_title["blocks"])
             except json.decoder.JSONDecodeError:
-                slug_str = ''.join(self.title.lower())
+                slug_str = "".join(self.title.lower())
             self.slug = uuslug(slug_str, instance=self)
         super(Question, self).save(*args, **kwargs)
 
@@ -82,24 +77,24 @@ class Question(models.Model):
     def create_tags(self, tag_list):
         for tag in tag_list:
             if tag:
-                t, created = Tag.objects.get_or_create(tag=tag.lower(), question=self)
+                t, created = Tag.objects.get_or_create(
+                    tag=tag.lower(), question=self
+                )
 
 
 class Tag(models.Model):
     tag = models.CharField(max_length=64)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     uuid = models.UUIDField(
-        db_index=True,
-        default=uuid_lib.uuid4,
-        editable=False
+        db_index=True, default=uuid_lib.uuid4, editable=False
     )
 
     class Meta:
         db_table = '"question_tags"'
         verbose_name = _("Tag")
         verbose_name_plural = _("Tags")
-        unique_together = (('tag', 'question'),)
-        index_together = [['tag', 'question'], ]
+        unique_together = (("tag", "question"),)
+        index_together = [["tag", "question"]]
 
     def __str__(self):
         return self.tag
@@ -120,16 +115,16 @@ class Tag(models.Model):
 
 class QuestionAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=5000, blank=False, validators=[validate_not_blank])
+    answer = models.CharField(
+        max_length=5000, blank=False, validators=[validate_draftjs_not_blank]
+    )
     # replied_to = models.ForeignKey("self", related_name='reply',
     #                                on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     upvotes = models.IntegerField(default=0)
     uuid = models.UUIDField(
-        db_index=True,
-        default=uuid_lib.uuid4,
-        editable=False
+        db_index=True, default=uuid_lib.uuid4, editable=False
     )
 
     class Meta:
@@ -160,9 +155,7 @@ class UserUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     answer = models.ForeignKey(QuestionAnswer, on_delete=models.CASCADE)
     uuid = models.UUIDField(
-        db_index=True,
-        default=uuid_lib.uuid4,
-        editable=False
+        db_index=True, default=uuid_lib.uuid4, editable=False
     )
 
     class Meta:
