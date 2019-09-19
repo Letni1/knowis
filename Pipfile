@@ -51,6 +51,7 @@ django-imagekit = "*"
 Markdown = "*"
 unidecode = "*"
 django-uuslug = "*"
+drf-yasg = "*"
 
 [requires]
 python_version = "3.6"
