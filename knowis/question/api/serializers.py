@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.response import Response
 
-from ...questions.models import Question, QuestionAnswer, Tag
+from ...question.models import Question, QuestionAnswer, Tag
 
 
 class QuestionSerializer(serializers.ModelSerializer):

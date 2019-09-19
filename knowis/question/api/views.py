@@ -26,7 +26,7 @@ from .serializers import (
 
 class QuestionListAPIViewByUser(ListAPIView):
     """
-    List the Published questions by username from url, paginated
+    List the Published question by username from url, paginated
     """
 
     pagination_class = PageNumberPagination
@@ -34,7 +34,7 @@ class QuestionListAPIViewByUser(ListAPIView):
 
     def get_queryset(self):
         """
-        This view should return a list of all the Published questions for
+        This view should return a list of all the Published question for
         the user as determined by the username portion of the URL.
         """
         username = self.kwargs["username"]
@@ -49,7 +49,7 @@ class QuestionListAPIViewByUser(ListAPIView):
 
 class QuestionListAPIViewBySlug(ListAPIView):
     """
-    List the Published questions by slug from url, paginated
+    List the Published question by slug from url, paginated
     """
 
     pagination_class = PageNumberPagination
@@ -57,7 +57,7 @@ class QuestionListAPIViewBySlug(ListAPIView):
 
     def get_queryset(self):
         """
-        This view should return a list of all the Published questions for
+        This view should return a list of all the Published question for
         the slug as determined by the slug portion of the URL.
         """
         slug = self.kwargs["slug"]
@@ -70,7 +70,7 @@ class QuestionListAPIViewBySlug(ListAPIView):
 
 class UserQuestionGetUpdateDeleteBySlug(RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, Update, Destroy questions by slug
+    Retrieve, Update, Destroy question by slug
     """
 
     permission_classes = (IsOwnerOrReadOnly,)
@@ -81,7 +81,7 @@ class UserQuestionGetUpdateDeleteBySlug(RetrieveUpdateDestroyAPIView):
 
 class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, Update, Destroy questions by uuid
+    Retrieve, Update, Destroy question by uuid
     """
 
     permission_classes = (IsOwnerOrReadOnly,)
@@ -92,7 +92,7 @@ class UserQuestionGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
 
 class QuestionListAPIView(ListAPIView):
     """
-    Returns the list of questions with pagination and filtering by tags/user
+    Returns the list of question with pagination and filtering by tags/user
 
     """
 
@@ -149,7 +149,7 @@ class AnswerCreateAPIViewByQuestionUUID(APIView):
 
 class AnswerGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, Update, Destroy questions by uuid
+    Retrieve, Update, Destroy question by uuid
     """
 
     permission_classes = (IsUserOrReadOnly,)
@@ -189,7 +189,7 @@ class TagListCreateApiView(ListCreateAPIView):
 
 class TagQuestionListByTagListApiView(ListAPIView):
     """
-        List the Published questions by tag from url, paginated
+        List the Published question by tag from url, paginated
     """
 
     pagination_class = PageNumberPagination
@@ -197,7 +197,7 @@ class TagQuestionListByTagListApiView(ListAPIView):
 
     def get_queryset(self):
         """
-        This view should return a list of all the Published questions for
+        This view should return a list of all the Published question for
         the tag as determined by the tag portion of the URL.
         """
         tag = self.kwargs["tag"]

@@ -1,8 +1,8 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
 class IsOwnerOrReadOnly(BasePermission):
-    message = 'Owners only'
+    message = "Owners only"
 
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -11,7 +11,7 @@ class IsOwnerOrReadOnly(BasePermission):
 
 
 class IsUserOrReadOnly(BasePermission):
-    message = 'Owners only'
+    message = "Owners only"
 
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -20,7 +20,7 @@ class IsUserOrReadOnly(BasePermission):
 
 
 class IsUser(BasePermission):
-    message = 'Owners only'
+    message = "Owners only"
 
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user

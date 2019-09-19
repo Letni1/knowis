@@ -1,13 +1,13 @@
+from datetime import datetime
 import json
 import logging
 import uuid as uuid_lib
-from datetime import datetime
 
-import markdown
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+import markdown
 from unidecode import unidecode
 from uuslug import uuslug
 
@@ -30,12 +30,14 @@ class Question(models.Model):
     PUBLISHED = "P"
     STATUS = ((DRAFT, "Draft"), (PUBLISHED, "Published"))
 
-    title = models.CharField(max_length=500, validators=[validate_draftjs_not_blank])
+    title = models.CharField(
+        max_length=500, validators=[validate_draftjs_not_blank]
+    )
     image = models.ImageField(
         upload_to="images/%Y/%m/%d", blank=True, max_length=255
     )
     slug = models.SlugField(max_length=255, null=True, blank=True)
-    content = models.TextField(max_length=1500, null=True, blank=True)
+    content = models.TextField(max_length=1500, blank=True)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
     create_user = models.ForeignKey(User, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)

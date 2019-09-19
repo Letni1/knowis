@@ -1,15 +1,18 @@
+from django.http import Http404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import NotFound
-from rest_framework.views import APIView
-from rest_framework.generics import (ListAPIView,
-                                     RetrieveAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from ...core.permissions import IsUserOrReadOnly, IsUser
+from rest_framework.views import APIView
+
+from ...core.permissions import IsUser, IsUserOrReadOnly
 from ..models import Useraccount
 from .serializers import UseraccountSerializer
-from django.http import Http404
 
 
 class UseraccountListAPIView(APIView):
@@ -32,16 +35,17 @@ class UseraccountListAPIView(APIView):
 
 class UseraccountGetUpdateDeleteByUUID(RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, Update, Destroy questions by uuid
+    Retrieve, Update, Destroy question by uuid
     """
+
     permission_classes = (IsUser, IsAuthenticated)
     queryset = Useraccount.objects.all()
     serializer_class = UseraccountSerializer
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
 
 
 class UseraccountRetrieveBySlug(RetrieveAPIView):
     permission_classes = (IsUser, IsAuthenticated)
     queryset = Useraccount.objects.all()
     serializer_class = UseraccountSerializer
-    lookup_field = 'slug'
+    lookup_field = "slug"

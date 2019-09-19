@@ -1,6 +1,6 @@
-import pytest
 from django.conf import settings
 from django.test import RequestFactory
+import pytest
 
 from knowis.users.tests.factories import UserFactory
 
