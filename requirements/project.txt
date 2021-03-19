@@ -39,7 +39,7 @@ django-rest==0.0.1
 django-rest-auth==0.9.5
 django-storages==1.7.1
 django-uuslug==1.1.9
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 docutils==0.15.2
 drf-yasg==1.16.1
